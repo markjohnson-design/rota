@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crescent House - Duty Display</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <meta http-equiv="refresh" content="60">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             margin: 0;
@@ -18,45 +18,114 @@
     <div id="app"></div>
 
     <script>
-        // CONFIGURATION - Easy to reprogram
-        const dutySchedule = {
-            day: [
-                { name: "Jo", days: [1, 2, 3] },     			// Mon
-                { name: "Mr Magee", days: [1, 2, 3] },      	// Mon, Tue, Wed
-                { name: "Bob Smith", days: [4, 5] },            // Thu, Fri
-                { name: "Carol Davis", days: [6, 0] }           // Sat, Sun
-            ],
-            evening: [
-                { name: "David Wilson", days: [1, 4] },          // Monday, Thursday
-                { name: "Emma Brown", days: [2, 5] },            // Tuesday, Friday
-                { name: "Mr Magee", days: [3, 6, 0] }        // Wed, Sat, Sun
-            ],
-            overnight: [
-                { name: "Mr Kendry", days: [1, 3, 4, 6, 0] },       // Mon, Wed, Thu, Sat, Sun
-                { name: "Mr Johnson", days: [2, 5] }        		// Tue, Fri
-            ]
-        };
-
+        // CONFIGURATION - Add your Google Sheets CSV URL here
+        // Instructions:
+        // 1. In Google Sheets, go to File → Share → Publish to web
+        // 2. Choose the sheet/tab you want, select "Comma-separated values (.csv)"
+        // 3. Click Publish and copy the URL here
+        const GOOGLE_SHEET_URL = 'YOUR_GOOGLE_SHEET_CSV_URL_HERE';
+        
+        // Expected CSV format:
+        // Name,Shift,Days
+        // Alice Johnson,morning,"1,2,3"
+        // Bob Smith,morning,"4,5"
+        // David Wilson,evening,"1,4"
+        // etc.
+        
         // Shift time definitions (24-hour format)
         const shiftTimes = {
-            day: { start: 8, end: 17, label: "Day Shift", icon: "☀️" },        // 8am - 5pm
+            morning: { start: 8, end: 17, label: "Day Shift", icon: "☀️" },        // 8am - 5pm
             evening: { start: 17, end: 23, label: "Evening Shift", icon: "🌅" },   // 5pm - 11pm
-            overnight: { start: 23, end: 8, label: "Overnight Shift", icon: "🌙" }     // 11pm - 8am
+            night: { start: 23, end: 8, label: "Overnight Shift", icon: "🌙" }     // 11pm - 8am
+        };
+
+        let dutySchedule = {
+            morning: [],
+            evening: [],
+            night: []
         };
 
         let currentTime = new Date();
         let currentShift = '';
         let dutyPerson = '';
+        let isLoading = true;
+        let errorMessage = '';
+
+        function parseDays(daysString) {
+            // Parse comma-separated days like "1,2,3" into array [1,2,3]
+            return daysString.split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d));
+        }
+
+        function parseCSV(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            const schedule = {
+                morning: [],
+                evening: [],
+                night: []
+            };
+            
+            // Skip header row
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                // Simple CSV parsing (handles quoted fields)
+                const matches = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
+                if (!matches || matches.length < 3) continue;
+                
+                const name = matches[0].replace(/^"|"$/g, '').trim();
+                const shift = matches[1].replace(/^"|"$/g, '').trim().toLowerCase();
+                const daysString = matches[2].replace(/^"|"$/g, '').trim();
+                
+                const days = parseDays(daysString);
+                
+                if (schedule[shift] && days.length > 0) {
+                    schedule[shift].push({ name, days });
+                }
+            }
+            
+            return schedule;
+        }
+
+        async function loadScheduleFromGoogleSheets() {
+            if (GOOGLE_SHEET_URL === 'YOUR_GOOGLE_SHEET_CSV_URL_HERE') {
+                errorMessage = 'Please configure Google Sheets URL';
+                isLoading = false;
+                render();
+                return;
+            }
+            
+            try {
+                // Use CORS proxy to bypass CORS restrictions when opening as local file
+                const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(GOOGLE_SHEET_URL);
+                const response = await fetch(proxyUrl);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch schedule');
+                }
+                
+                const csvText = await response.text();
+                dutySchedule = parseCSV(csvText);
+                isLoading = false;
+                errorMessage = '';
+                updateDuty(currentTime);
+                render();
+            } catch (error) {
+                console.error('Error loading schedule:', error);
+                errorMessage = 'Error loading schedule from Google Sheets';
+                isLoading = false;
+                render();
+            }
+        }
 
         function getCurrentShift(date) {
             const hour = date.getHours();
             
-            if (hour >= shiftTimes.day.start && hour < shiftTimes.day.end) {
-                return 'day';
+            if (hour >= shiftTimes.morning.start && hour < shiftTimes.morning.end) {
+                return 'morning';
             } else if (hour >= shiftTimes.evening.start && hour < shiftTimes.evening.end) {
                 return 'evening';
             } else {
-                return 'overnight';
+                return 'night';
             }
         }
 
@@ -80,6 +149,47 @@
             const shiftInfo = shiftTimes[currentShift];
             const timeString = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
+            let mainContent;
+            
+            if (isLoading) {
+                mainContent = `
+                    <div class="border-2 border-black p-12 text-center">
+                        <div class="text-2xl">Loading schedule...</div>
+                    </div>
+                `;
+            } else if (errorMessage) {
+                mainContent = `
+                    <div class="border-2 border-black p-12 text-center">
+                        <div class="text-xl text-red-600 mb-4">⚠️ ${errorMessage}</div>
+                        <div class="text-sm">Check the Google Sheets URL configuration</div>
+                    </div>
+                `;
+            } else {
+                mainContent = `
+                    <!-- Shift Indicator -->
+                    <div class="text-center mb-6">
+                        <div class="flex items-center justify-center gap-2 text-xl font-semibold">
+                            <span style="font-size: 24px;">${shiftInfo.icon}</span>
+                            <span>${shiftInfo.label}</span>
+                        </div>
+                        <div class="text-sm opacity-60 mt-1">
+                            ${timeString}
+                        </div>
+                    </div>
+
+                    <!-- Main Display -->
+                    <div class="border-2 border-black p-12 text-center">
+                        <div class="flex items-center justify-center gap-3 mb-4">
+                            <span style="font-size: 32px;">👤</span>
+                            <span class="text-2xl font-semibold">ON DUTY:</span>
+                        </div>
+                        <div class="text-6xl font-bold mt-4">
+                            ${dutyPerson}
+                        </div>
+                    </div>
+                `;
+            }
+            
             document.getElementById('app').innerHTML = `
                 <div class="min-h-screen bg-white text-black flex items-center justify-center p-4">
                     <div class="max-w-2xl w-full border-4 border-black p-8">
@@ -92,27 +202,7 @@
                             </div>
                         </div>
 
-                        <!-- Shift Indicator -->
-                        <div class="text-center mb-6">
-                            <div class="flex items-center justify-center gap-2 text-xl font-semibold">
-                                <span style="font-size: 24px;">${shiftInfo.icon}</span>
-                                <span>${shiftInfo.label}</span>
-                            </div>
-                            <div class="text-sm opacity-60 mt-1">
-                                ${timeString}
-                            </div>
-                        </div>
-
-                        <!-- Main Display -->
-                        <div class="border-2 border-black p-12 text-center">
-                            <div class="flex items-center justify-center gap-3 mb-4">
-                                <span style="font-size: 32px;">👤</span>
-                                <span class="text-2xl font-semibold">ON DUTY:</span>
-                            </div>
-                            <div class="text-6xl font-bold mt-4">
-                                ${dutyPerson}
-                            </div>
-                        </div>
+                        ${mainContent}
 
                         <!-- Shift Schedule Reference -->
                         <div class="mt-8 grid grid-cols-3 gap-4 text-xs border-t-2 border-black pt-6">
@@ -150,12 +240,17 @@
 
         function update() {
             currentTime = new Date();
-            updateDuty(currentTime);
+            if (!isLoading && !errorMessage) {
+                updateDuty(currentTime);
+            }
             render();
         }
 
-        // Initial update
-        update();
+        // Initial render
+        render();
+
+        // Load schedule from Google Sheets
+        loadScheduleFromGoogleSheets();
 
         // Update every minute (low power - infrequent updates)
         setInterval(update, 60000);
