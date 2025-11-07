@@ -3,14 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Crescent House - Duty Display</title>
-    <meta http-equiv="refresh" content="60">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
+        html, body {
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fde68a;
+            background: -webkit-linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+        }
+        
+        #app {
+            width: 100vw;
+            height: 100vh;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            padding: 2vh 2vw;
+            box-sizing: border-box;
+        }
+        
+        .main-container {
+            width: 100%;
+            height: 100%;
+            max-width: 1200px;
+            max-height: 100%;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            -webkit-box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border-radius: 1.5rem;
+            padding: 3vh;
+            height: 100%;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        
+        .header-section {
+            -webkit-box-flex: 0;
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            text-align: center;
+            margin-bottom: 2vh;
+        }
+        
+        .content-section {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1 1 auto;
+            flex: 1 1 auto;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            min-height: 0;
+        }
+        
+        .footer-section {
+            -webkit-box-flex: 0;
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+            margin-top: 2vh;
+        }
+        
+        .shift-badge {
+            background: #f59e0b;
+            background: -webkit-linear-gradient(135deg, #f59e0b, #d97706);
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            display: -webkit-inline-box;
+            display: -webkit-inline-flex;
+            display: inline-flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+            color: white;
+            padding: 1vh 2vw;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+        
+        .duty-card {
+            background: #fffbeb;
+            background: -webkit-linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 3px solid #f59e0b;
+            border-radius: 1.5rem;
+            padding: 3vh 2vw;
+            text-align: center;
+            margin-bottom: 2vh;
+        }
+        
+        .next-duty-card {
+            background: #ffffff;
+            background: -webkit-linear-gradient(135deg, #ffffff 0%, #fefce8 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%);
+            border: 2px solid #fbbf24;
+            border-radius: 1rem;
+            padding: 2vh 2vw;
+            text-align: center;
+        }
+        
+        .shift-time-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 0.75rem;
+            padding: 1.5vh 1vw;
+            text-align: center;
+        }
+        
+        .crescent-icon {
+            display: inline-block;
+            -webkit-animation: float 3s ease-in-out infinite;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @-webkit-keyframes float {
+            0%, 100% { -webkit-transform: translateY(0px); transform: translateY(0px); }
+            50% { -webkit-transform: translateY(-5px); transform: translateY(-5px); }
+        }
+        
+        @keyframes float {
+            0%, 100% { -webkit-transform: translateY(0px); transform: translateY(0px); }
+            50% { -webkit-transform: translateY(-5px); transform: translateY(-5px); }
+        }
+        
+        /* Responsive text sizes using vh units */
+        .text-title { font-size: 5vh; font-weight: bold; color: #78350f; }
+        .text-date { font-size: 2.5vh; color: #b45309; font-weight: 500; }
+        .text-shift-label { font-size: 2.5vh; font-weight: 600; }
+        .text-time { font-size: 2.5vh; color: #f59e0b; font-weight: 500; }
+        .text-duty-label { font-size: 3.5vh; color: #78350f; font-weight: 600; }
+        .text-duty-name { font-size: 8vh; color: #1c1917; font-weight: bold; }
+        .text-next-label { font-size: 2.5vh; color: #b45309; font-weight: 600; }
+        .text-next-shift { font-size: 1.8vh; color: #d97706; }
+        .text-next-name { font-size: 4.5vh; color: #78350f; font-weight: bold; }
+        .text-schedule-label { font-size: 1.8vh; color: #92400e; font-weight: 600; }
+        .text-schedule-time { font-size: 1.6vh; color: #d97706; }
+        .text-footer { font-size: 1.6vh; color: #d97706; }
+        
+        .icon-sm { font-size: 2.5vh; }
+        .icon-md { font-size: 3vh; }
+        .icon-lg { font-size: 4vh; }
+        
+        .flex-center {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+        }
+        
+        .gap-sm { gap: 1vh; }
+        .gap-md { gap: 1.5vh; }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5vh;
         }
     </style>
 </head>
@@ -18,76 +206,63 @@
     <div id="app"></div>
 
     <script>
-        // CONFIGURATION - Add your Google Sheets CSV URL here
-        // Instructions:
-        // 1. In Google Sheets, go to File → Share → Publish to web
-        // 2. Choose the sheet/tab you want, select "Comma-separated values (.csv)"
-        // 3. Click Publish and copy the URL here
-        const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTaV5LO0lckYcYAl-2NV3kut2k7TKxezMG5n7Kql2iTTtcg7Q9Lj_MfEgHlk8Y0pybHHkSLLojxmS7S/pub?gid=0&single=true&output=csv';
+        var GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTaV5LO0lckYcYAl-2NV3kut2k7TKxezMG5n7Kql2iTTtcg7Q9Lj_MfEgHlk8Y0pybHHkSLLojxmS7S/pub?gid=0&single=true&output=csv';
         
-        // Expected CSV format:
-        // Name,Shift,Days
-        // Alice Johnson,morning,"1,2,3"
-        // Bob Smith,morning,"4,5"
-        // David Wilson,evening,"1,4"
-        // etc.
-        
-        // Shift time definitions (24-hour format)
-        const shiftTimes = {
-            morning: { start: 8, end: 17, label: "Day Shift", icon: "☀️" },        // 8am - 5pm
-            evening: { start: 17, end: 23, label: "Evening Shift", icon: "🌅" },   // 5pm - 11pm
-            night: { start: 23, end: 8, label: "Overnight Shift", icon: "🌙" }     // 11pm - 8am
+        var shiftTimes = {
+            day: { start: 8, end: 17, label: "Day Shift", icon: "☀️" },
+            evening: { start: 17, end: 23, label: "Evening Shift", icon: "🌅" },
+            overnight: { start: 23, end: 8, label: "Overnight Shift", icon: "🌙" }
         };
 
-        let dutySchedule = {
-            morning: [],
-            evening: [],
-            night: []
-        };
+        var dutySchedule = [];
+        var currentTime = new Date();
+        var currentShift = '';
+        var dutyPerson = '';
+        var nextShift = '';
+        var nextDutyPerson = '';
+        var nextShiftTime = '';
+        var isLoading = true;
+        var errorMessage = '';
 
-        let currentTime = new Date();
-        let currentShift = '';
-        let dutyPerson = '';
-        let isLoading = true;
-        let errorMessage = '';
+        function parseDate(dateString) {
+            var parts = dateString.split('-');
+            if (parts.length !== 3) return null;
+            var year = parseInt(parts[0]);
+            var month = parseInt(parts[1]) - 1;
+            var day = parseInt(parts[2]);
+            return new Date(year, month, day);
+        }
 
-        function parseDays(daysString) {
-            // Parse comma-separated days like "1,2,3" into array [1,2,3]
-            return daysString.split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d));
+        function isSameDate(date1, date2) {
+            return date1.getFullYear() === date2.getFullYear() &&
+                   date1.getMonth() === date2.getMonth() &&
+                   date1.getDate() === date2.getDate();
         }
 
         function parseCSV(csv) {
-            const lines = csv.split('\n').filter(line => line.trim());
-            const schedule = {
-                morning: [],
-                evening: [],
-                night: []
-            };
+            var lines = csv.split('\n').filter(function(line) { return line.trim(); });
+            var schedule = [];
             
-            // Skip header row
-            for (let i = 1; i < lines.length; i++) {
-                const line = lines[i].trim();
+            for (var i = 1; i < lines.length; i++) {
+                var line = lines[i].trim();
                 if (!line) continue;
                 
-                // Simple CSV parsing (handles quoted fields)
-                const matches = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
+                var matches = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
                 if (!matches || matches.length < 3) continue;
                 
-                const name = matches[0].replace(/^"|"$/g, '').trim();
-                const shift = matches[1].replace(/^"|"$/g, '').trim().toLowerCase();
-                const daysString = matches[2].replace(/^"|"$/g, '').trim();
+                var dateString = matches[0].replace(/^"|"$/g, '').trim();
+                var shift = matches[1].replace(/^"|"$/g, '').trim().toLowerCase();
+                var name = matches[2].replace(/^"|"$/g, '').trim();
+                var date = parseDate(dateString);
                 
-                const days = parseDays(daysString);
-                
-                if (schedule[shift] && days.length > 0) {
-                    schedule[shift].push({ name, days });
+                if (date && (shift === 'day' || shift === 'evening' || shift === 'overnight')) {
+                    schedule.push({ date: date, shift: shift, name: name });
                 }
             }
-            
             return schedule;
         }
 
-        async function loadScheduleFromGoogleSheets() {
+        function loadScheduleFromGoogleSheets() {
             if (GOOGLE_SHEET_URL === 'YOUR_GOOGLE_SHEET_CSV_URL_HERE') {
                 errorMessage = 'Please configure Google Sheets URL';
                 isLoading = false;
@@ -95,147 +270,157 @@
                 return;
             }
             
-            try {
-                // Use CORS proxy to bypass CORS restrictions when opening as local file
-                const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(GOOGLE_SHEET_URL);
-                const response = await fetch(proxyUrl);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch schedule');
-                }
-                
-                const csvText = await response.text();
+            var timestamp = new Date().getTime();
+            var urlWithTimestamp = GOOGLE_SHEET_URL + '&_=' + timestamp;
+            var proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(urlWithTimestamp);
+            
+            fetch(proxyUrl, {
+                cache: 'no-store',
+                headers: { 'Cache-Control': 'no-cache' }
+            })
+            .then(function(response) {
+                if (!response.ok) throw new Error('Failed to fetch schedule');
+                return response.text();
+            })
+            .then(function(csvText) {
                 dutySchedule = parseCSV(csvText);
                 isLoading = false;
                 errorMessage = '';
                 updateDuty(currentTime);
                 render();
-            } catch (error) {
+            })
+            .catch(function(error) {
                 console.error('Error loading schedule:', error);
                 errorMessage = 'Error loading schedule from Google Sheets';
                 isLoading = false;
                 render();
-            }
+            });
         }
 
         function getCurrentShift(date) {
-            const hour = date.getHours();
-            
-            if (hour >= shiftTimes.morning.start && hour < shiftTimes.morning.end) {
-                return 'morning';
-            } else if (hour >= shiftTimes.evening.start && hour < shiftTimes.evening.end) {
-                return 'evening';
-            } else {
-                return 'night';
+            var hour = date.getHours();
+            if (hour >= shiftTimes.day.start && hour < shiftTimes.day.end) return 'day';
+            if (hour >= shiftTimes.evening.start && hour < shiftTimes.evening.end) return 'evening';
+            return 'overnight';
+        }
+
+        function getNextShift(currentShift) {
+            if (currentShift === 'day') return 'evening';
+            if (currentShift === 'evening') return 'overnight';
+            return 'day';
+        }
+
+        function getNextShiftDate(date, currentShift) {
+            if (currentShift === 'overnight') {
+                var tomorrow = new Date(date);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                return tomorrow;
             }
+            return date;
         }
 
         function updateDuty(date) {
-            const shift = getCurrentShift(date);
-            const dayOfWeek = date.getDay();
-            
+            var shift = getCurrentShift(date);
             currentShift = shift;
             
-            const person = dutySchedule[shift].find(p => p.days.includes(dayOfWeek));
-            dutyPerson = person ? person.name : 'No duty assigned';
+            var entry = dutySchedule.find(function(e) {
+                return isSameDate(e.date, date) && e.shift === shift;
+            });
+            dutyPerson = entry ? entry.name : 'No duty assigned';
+
+            nextShift = getNextShift(shift);
+            var nextShiftDate = getNextShiftDate(date, shift);
+            var nextEntry = dutySchedule.find(function(e) {
+                return isSameDate(e.date, nextShiftDate) && e.shift === nextShift;
+            });
+            nextDutyPerson = nextEntry ? nextEntry.name : 'No duty assigned';
+            nextShiftTime = shiftTimes[nextShift].label;
         }
 
         function formatDate(date) {
-            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
+            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            return days[date.getDay()] + ', ' + months[date.getMonth()] + ' ' + date.getDate();
         }
 
         function render() {
-            const shiftInfo = shiftTimes[currentShift];
-            const timeString = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            var shiftInfo = shiftTimes[currentShift];
+            var timeString = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
-            let mainContent;
+            var mainContent;
             
             if (isLoading) {
-                mainContent = `
-                    <div class="border-2 border-black p-12 text-center">
-                        <div class="text-2xl">Loading schedule...</div>
-                    </div>
-                `;
+                mainContent = '<div class="duty-card"><div class="text-duty-label">Loading schedule...</div></div>';
             } else if (errorMessage) {
-                mainContent = `
-                    <div class="border-2 border-black p-12 text-center">
-                        <div class="text-xl text-red-600 mb-4">⚠️ ${errorMessage}</div>
-                        <div class="text-sm">Check the Google Sheets URL configuration</div>
-                    </div>
-                `;
+                mainContent = '<div class="duty-card"><div class="text-duty-label" style="color: #dc2626; margin-bottom: 1vh;">⚠️ ' + errorMessage + '</div><div class="text-next-shift">Check the Google Sheets URL configuration</div></div>';
             } else {
-                mainContent = `
-                    <!-- Shift Indicator -->
-                    <div class="text-center mb-6">
-                        <div class="flex items-center justify-center gap-2 text-xl font-semibold">
-                            <span style="font-size: 24px;">${shiftInfo.icon}</span>
-                            <span>${shiftInfo.label}</span>
-                        </div>
-                        <div class="text-sm opacity-60 mt-1">
-                            ${timeString}
-                        </div>
-                    </div>
-
-                    <!-- Main Display -->
-                    <div class="border-2 border-black p-12 text-center">
-                        <div class="flex items-center justify-center gap-3 mb-4">
-                            <span style="font-size: 32px;">👤</span>
-                            <span class="text-2xl font-semibold">ON DUTY:</span>
-                        </div>
-                        <div class="text-6xl font-bold mt-4">
-                            ${dutyPerson}
-                        </div>
-                    </div>
-                `;
+                mainContent = '\
+                    <div style="text-align: center; margin-bottom: 2vh;">\
+                        <div class="shift-badge gap-sm">\
+                            <span class="icon-md">' + shiftInfo.icon + '</span>\
+                            <span class="text-shift-label">' + shiftInfo.label + '</span>\
+                        </div>\
+                        <div class="text-time" style="margin-top: 1vh;">' + timeString + '</div>\
+                    </div>\
+                    <div class="duty-card">\
+                        <div class="flex-center gap-md" style="margin-bottom: 2vh;">\
+                            <span class="icon-lg">👤</span>\
+                            <span class="text-duty-label">Currently On Duty</span>\
+                        </div>\
+                        <div class="text-duty-name">' + dutyPerson + '</div>\
+                    </div>\
+                    <div class="next-duty-card">\
+                        <div class="text-next-label">Coming Up Next</div>\
+                        <div class="text-next-shift" style="margin: 0.5vh 0;">' + nextShiftTime + '</div>\
+                        <div class="text-next-name">' + nextDutyPerson + '</div>\
+                    </div>\
+                ';
             }
             
-            document.getElementById('app').innerHTML = `
-                <div class="min-h-screen bg-white text-black flex items-center justify-center p-4">
-                    <div class="max-w-2xl w-full border-4 border-black p-8">
-                        <!-- Header -->
-                        <div class="text-center mb-12">
-                            <h1 class="text-4xl font-bold mb-2">CRESCENT HOUSE</h1>
-                            <div class="flex items-center justify-center gap-2 text-lg">
-                                <span>🕐</span>
-                                <span>${formatDate(currentTime)}</span>
-                            </div>
-                        </div>
-
-                        ${mainContent}
-
-                        <!-- Shift Schedule Reference -->
-                        <div class="mt-8 grid grid-cols-3 gap-4 text-xs border-t-2 border-black pt-6">
-                            <div class="text-center">
-                                <div class="flex items-center justify-center gap-1 font-semibold mb-1">
-                                    <span>☀️</span>
-                                    <span>Day</span>
-                                </div>
-                                <div class="opacity-60">8am - 5pm</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="flex items-center justify-center gap-1 font-semibold mb-1">
-                                    <span>🌅</span>
-                                    <span>Evening</span>
-                                </div>
-                                <div class="opacity-60">5pm - 11pm</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="flex items-center justify-center gap-1 font-semibold mb-1">
-                                    <span>🌙</span>
-                                    <span>Overnight</span>
-                                </div>
-                                <div class="opacity-60">11pm - 8am</div>
-                            </div>
-                        </div>
-
-                        <!-- Footer Info -->
-                        <div class="mt-6 text-center text-sm opacity-60">
-                            <p>Display updates every minute</p>
-                        </div>
-                    </div>
-                </div>
-            `;
+            document.getElementById('app').innerHTML = '\
+                <div class="main-container">\
+                    <div class="card">\
+                        <div class="header-section">\
+                            <h1 class="text-title"><span class="crescent-icon">🌙</span> Crescent House</h1>\
+                            <div class="flex-center gap-sm" style="margin-top: 0.5vh;">\
+                                <span class="icon-sm">📅</span>\
+                                <span class="text-date">' + formatDate(currentTime) + '</span>\
+                            </div>\
+                        </div>\
+                        <div class="content-section">\
+                            ' + mainContent + '\
+                        </div>\
+                        <div class="footer-section">\
+                            <div class="grid-3">\
+                                <div class="shift-time-box">\
+                                    <div class="flex-center gap-sm" style="margin-bottom: 0.5vh;">\
+                                        <span class="icon-sm">☀️</span>\
+                                        <span class="text-schedule-label">Day</span>\
+                                    </div>\
+                                    <div class="text-schedule-time">8am - 5pm</div>\
+                                </div>\
+                                <div class="shift-time-box">\
+                                    <div class="flex-center gap-sm" style="margin-bottom: 0.5vh;">\
+                                        <span class="icon-sm">🌅</span>\
+                                        <span class="text-schedule-label">Evening</span>\
+                                    </div>\
+                                    <div class="text-schedule-time">5pm - 11pm</div>\
+                                </div>\
+                                <div class="shift-time-box">\
+                                    <div class="flex-center gap-sm" style="margin-bottom: 0.5vh;">\
+                                        <span class="icon-sm">🌙</span>\
+                                        <span class="text-schedule-label">Overnight</span>\
+                                    </div>\
+                                    <div class="text-schedule-time">11pm - 8am</div>\
+                                </div>\
+                            </div>\
+                            <div style="text-align: center; margin-top: 1.5vh;">\
+                                <p class="text-footer">Display updates every minute • Schedule reloads every 5 minutes</p>\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>\
+            ';
         }
 
         function update() {
@@ -246,14 +431,10 @@
             render();
         }
 
-        // Initial render
         render();
-
-        // Load schedule from Google Sheets
         loadScheduleFromGoogleSheets();
-
-        // Update every minute (low power - infrequent updates)
         setInterval(update, 60000);
+        setInterval(loadScheduleFromGoogleSheets, 300000);
     </script>
 </body>
 </html>
