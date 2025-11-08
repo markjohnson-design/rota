@@ -103,12 +103,10 @@
             margin-top: 0.5vh;
         }
         
-        /* === SVG LOGO STYLE UPDATED === */
         .logo-svg {
             position: absolute;
             top: 1.5vh;
             left: 1.5vw;
-            /* Use the smaller value: 5% of height or 7% of width */
             width: min(25vh, 15vw);
             height: min(25vh, 15vw);
         }
@@ -285,7 +283,8 @@
                 if (data && data.current_weather) {
                     weatherData = {
                         temp: Math.round(data.current_weather.temperature),
-                        code: data.current_weather.weathercode
+                        code: data.current_weather.weathercode,
+                        is_day: data.current_weather.is_day // 1 = day, 0 = night
                     };
                     render(); // Re-render with new weather data
                 }
@@ -296,23 +295,39 @@
             });
         }
 
-        function getWeatherIcon(code) {
+        // === UPDATED with improved night icons ===
+        function getWeatherIcon(code, is_day) {
             switch (code) {
-                case 0: return '☀️'; // Clear sky
-                case 1: return '🌤️'; // Mainly clear
-                case 2: return '🌥️'; // Partly cloudy
-                case 3: return '☁️'; // Overcast
-                case 45: case 48: return '🌫️'; // Fog
-                case 51: case 53: case 55: return '🌦️'; // Drizzle
-                case 61: case 63: case 65: return '🌧️'; // Rain
-                case 66: case 67: return '🌧️'; // Freezing Rain
-                case 71: case 73: case 75: return '🌨️'; // Snow fall
-                case 77: return '🌨️'; // Snow grains
-                case 80: case 81: case 82: return '🌧️'; // Rain showers
-                case 85: case 86: return '🌨️'; // Snow showers
-                case 95: return '⛈️'; // Thunderstorm
-                case 96: case 99: return '⛈️'; // Thunderstorm with hail
-                default: return '🌡️'; // Default/unknown
+                case 0: // Clear sky
+                    return is_day ? '☀️' : '🌙'; // Changed '🌑' to '🌙' for theme
+                case 1: // Mainly clear
+                    return is_day ? '🌤️' : '☁️';
+                case 2: // Partly cloudy
+                    return is_day ? '🌥️' : '☁️';
+                case 3: // Overcast
+                    return '☁️';
+                case 45: case 48: // Fog
+                    return '🌫️';
+                case 51: case 53: case 55: // Drizzle
+                    return is_day ? '🌦️' : '🌧️'; // <-- IMPROVEMENT: Shows rain at night, not sun
+                case 61: case 63: case 65: // Rain
+                    return '🌧️';
+                case 66: case 67: // Freezing Rain
+                    return '🌧️';
+                case 71: case 73: case 75: // Snow fall
+                    return '🌨️';
+                case 77: // Snow grains
+                    return '🌨️';
+                case 80: case 81: case 82: // Rain showers
+                    return '🌧️';
+                case 85: case 86: // Snow showers
+                    return '🌨️';
+                case 95: // Thunderstorm
+                    return '⛈️';
+                case 96: case 99: // Thunderstorm with hail
+                    return '⛈️';
+                default:
+                    return '🌡️'; // Default/unknown
             }
         }
 
@@ -546,7 +561,8 @@
                 
                 // If weather data is available, override with live weather
                 if (weatherData && weatherData.temp !== undefined) {
-                    var weatherIcon = getWeatherIcon(weatherData.code);
+                    // === UPDATED to pass 'is_day' ===
+                    var weatherIcon = getWeatherIcon(weatherData.code, weatherData.is_day);
                     weatherDisplay = weatherIcon;
                     weatherTemp = ' ' + weatherData.temp + '°C';
                 }
@@ -589,7 +605,6 @@
                                 <div class="text-oncall-name">' + libraryDutyPerson + '</div>\
                             </div>\
                             <div>\
-                                \
                                 <div class="flex-center gap-sm" style="margin-bottom: 0.2vh;">\
                                     <span class="icon-sm">🏀</span>\
                                     <span class="text-oncall-label">Sports Hall</span>\
@@ -659,7 +674,7 @@
 
         render();
         loadScheduleFromGoogleSheets();
-        loadWeather(); // This function now exists and will be called
+        loadWeather();
         
         // Update display every minute
         setInterval(update, 60000);
