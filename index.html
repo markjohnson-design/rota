@@ -57,7 +57,7 @@
             -webkit-box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             border-radius: 1.5rem;
-            padding: 3vh;
+            padding: 2vh;
             height: 100%;
             display: -webkit-box;
             display: -webkit-flex;
@@ -74,7 +74,7 @@
             -webkit-flex: 0 0 auto;
             flex: 0 0 auto;
             text-align: center;
-            margin-bottom: 2vh;
+            margin-bottom: 1vh;
         }
         
         .content-section {
@@ -88,17 +88,18 @@
             -webkit-box-direction: normal;
             -webkit-flex-direction: column;
             flex-direction: column;
-            -webkit-box-pack: center;
-            -webkit-justify-content: center;
-            justify-content: center;
+            -webkit-box-pack: start;
+            -webkit-justify-content: flex-start;
+            justify-content: flex-start;
             min-height: 0;
+            overflow: hidden;
         }
         
         .footer-section {
             -webkit-box-flex: 0;
             -webkit-flex: 0 0 auto;
             flex: 0 0 auto;
-            margin-top: 2vh;
+            margin-top: 1vh;
         }
         
         .shift-badge {
@@ -123,9 +124,9 @@
             background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
             border: 3px solid #f59e0b;
             border-radius: 1.5rem;
-            padding: 3vh 2vw;
+            padding: 1.8vh 2vw;
             text-align: center;
-            margin-bottom: 2vh;
+            margin-bottom: 1vh;
         }
         
         .next-duty-card {
@@ -134,15 +135,35 @@
             background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%);
             border: 2px solid #fbbf24;
             border-radius: 1rem;
-            padding: 2vh 2vw;
+            padding: 1.2vh 2vw;
             text-align: center;
         }
+        
+        .oncall-card {
+            background: #ffffff;
+            background: -webkit-linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border: 2px solid #fb923c;
+            border-radius: 0.75rem;
+            padding: 0.8vh 1vw;
+            text-align: center;
+            margin-top: 1vh;
+        }
+        
+        .duty-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1vw;
+        }
+        
+        .text-oncall-label { font-size: 2vh; color: #c2410c; font-weight: 600; }
+        .text-oncall-name { font-size: 3.5vh; color: #9a3412; font-weight: bold; }
         
         .shift-time-box {
             background: rgba(245, 158, 11, 0.1);
             border: 1px solid rgba(245, 158, 11, 0.3);
             border-radius: 0.75rem;
-            padding: 1.5vh 1vw;
+            padding: 1vh 1vw;
             text-align: center;
         }
         
@@ -198,7 +219,7 @@
         .grid-3 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1.5vh;
+            gap: 1vh;
         }
     </style>
 </head>
@@ -215,12 +236,18 @@
         };
 
         var dutySchedule = [];
+        var onCallSchedule = [];
+        var libraryDutySchedule = [];
+        var sportsHallDutySchedule = [];
         var currentTime = new Date();
         var currentShift = '';
         var dutyPerson = '';
         var nextShift = '';
         var nextDutyPerson = '';
         var nextShiftTime = '';
+        var onCallPerson = '';
+        var libraryDutyPerson = '';
+        var sportsHallDutyPerson = '';
         var isLoading = true;
         var errorMessage = '';
 
@@ -242,6 +269,9 @@
         function parseCSV(csv) {
             var lines = csv.split('\n').filter(function(line) { return line.trim(); });
             var schedule = [];
+            var onCall = [];
+            var libraryDuty = [];
+            var sportsHallDuty = [];
             
             for (var i = 1; i < lines.length; i++) {
                 var line = lines[i].trim();
@@ -255,11 +285,17 @@
                 var name = matches[2].replace(/^"|"$/g, '').trim();
                 var date = parseDate(dateString);
                 
-                if (date && (shift === 'day' || shift === 'evening' || shift === 'overnight')) {
+                if (date && shift === 'on-call') {
+                    onCall.push({ date: date, name: name });
+                } else if (date && shift === 'library') {
+                    libraryDuty.push({ date: date, name: name });
+                } else if (date && shift === 'sports-hall') {
+                    sportsHallDuty.push({ date: date, name: name });
+                } else if (date && (shift === 'day' || shift === 'evening' || shift === 'overnight')) {
                     schedule.push({ date: date, shift: shift, name: name });
                 }
             }
-            return schedule;
+            return { schedule: schedule, onCall: onCall, libraryDuty: libraryDuty, sportsHallDuty: sportsHallDuty };
         }
 
         function loadScheduleFromGoogleSheets() {
@@ -283,7 +319,11 @@
                 return response.text();
             })
             .then(function(csvText) {
-                dutySchedule = parseCSV(csvText);
+                var parsed = parseCSV(csvText);
+                dutySchedule = parsed.schedule;
+                onCallSchedule = parsed.onCall;
+                libraryDutySchedule = parsed.libraryDuty;
+                sportsHallDutySchedule = parsed.sportsHallDuty;
                 isLoading = false;
                 errorMessage = '';
                 updateDuty(currentTime);
@@ -323,6 +363,11 @@
             var shift = getCurrentShift(date);
             currentShift = shift;
             
+            var dayOfWeek = date.getDay(); // 0 = Sunday, 5 = Friday, 6 = Saturday
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var timeInMinutes = hours * 60 + minutes;
+            
             var entry = dutySchedule.find(function(e) {
                 return isSameDate(e.date, date) && e.shift === shift;
             });
@@ -335,6 +380,51 @@
             });
             nextDutyPerson = nextEntry ? nextEntry.name : 'No duty assigned';
             nextShiftTime = shiftTimes[nextShift].label;
+            
+            var onCallEntry = onCallSchedule.find(function(e) {
+                return isSameDate(e.date, date);
+            });
+            onCallPerson = onCallEntry ? onCallEntry.name : 'Not assigned';
+            
+            // Library: No session on Friday, Saturday (except 10am-11:30am), Sunday
+            if (dayOfWeek === 5 || dayOfWeek === 0) {
+                libraryDutyPerson = 'Closed';
+            } else if (dayOfWeek === 6) {
+                // Saturday: Open 10am-11:30am
+                if (timeInMinutes >= 600 && timeInMinutes < 690) { // 600 = 10am, 690 = 11:30am
+                    var libraryEntry = libraryDutySchedule.find(function(e) {
+                        return isSameDate(e.date, date);
+                    });
+                    libraryDutyPerson = libraryEntry ? libraryEntry.name : 'Open';
+                } else {
+                    libraryDutyPerson = 'Closed';
+                }
+            } else {
+                var libraryEntry = libraryDutySchedule.find(function(e) {
+                    return isSameDate(e.date, date);
+                });
+                libraryDutyPerson = libraryEntry ? libraryEntry.name : 'Not assigned';
+            }
+            
+            // Sports Hall: No session on Sunday, Saturday except 10am-11:30am
+            if (dayOfWeek === 0) {
+                sportsHallDutyPerson = 'Closed';
+            } else if (dayOfWeek === 6) {
+                // Saturday: Open 10am-11:30am
+                if (timeInMinutes >= 600 && timeInMinutes < 690) { // 600 = 10am, 690 = 11:30am
+                    var sportsHallEntry = sportsHallDutySchedule.find(function(e) {
+                        return isSameDate(e.date, date);
+                    });
+                    sportsHallDutyPerson = sportsHallEntry ? sportsHallEntry.name : 'Open';
+                } else {
+                    sportsHallDutyPerson = 'Closed';
+                }
+            } else {
+                var sportsHallEntry = sportsHallDutySchedule.find(function(e) {
+                    return isSameDate(e.date, date);
+                });
+                sportsHallDutyPerson = sportsHallEntry ? sportsHallEntry.name : 'Not assigned';
+            }
         }
 
         function formatDate(date) {
@@ -355,15 +445,15 @@
                 mainContent = '<div class="duty-card"><div class="text-duty-label" style="color: #dc2626; margin-bottom: 1vh;">⚠️ ' + errorMessage + '</div><div class="text-next-shift">Check the Google Sheets URL configuration</div></div>';
             } else {
                 mainContent = '\
-                    <div style="text-align: center; margin-bottom: 2vh;">\
+                    <div style="text-align: center; margin-bottom: 1vh;">\
                         <div class="shift-badge gap-sm">\
                             <span class="icon-md">' + shiftInfo.icon + '</span>\
                             <span class="text-shift-label">' + shiftInfo.label + '</span>\
                         </div>\
-                        <div class="text-time" style="margin-top: 1vh;">' + timeString + '</div>\
+                        <div class="text-time" style="margin-top: 0.5vh;">' + timeString + '</div>\
                     </div>\
                     <div class="duty-card">\
-                        <div class="flex-center gap-md" style="margin-bottom: 2vh;">\
+                        <div class="flex-center gap-md" style="margin-bottom: 1vh;">\
                             <span class="icon-lg">👤</span>\
                             <span class="text-duty-label">Currently On Duty</span>\
                         </div>\
@@ -371,8 +461,33 @@
                     </div>\
                     <div class="next-duty-card">\
                         <div class="text-next-label">Coming Up Next</div>\
-                        <div class="text-next-shift" style="margin: 0.5vh 0;">' + nextShiftTime + '</div>\
+                        <div class="text-next-shift" style="margin: 0.3vh 0 0.5vh 0;">' + nextShiftTime + '</div>\
                         <div class="text-next-name">' + nextDutyPerson + '</div>\
+                    </div>\
+                    <div class="oncall-card">\
+                        <div class="duty-grid">\
+                            <div>\
+                                <div class="flex-center gap-sm" style="margin-bottom: 0.2vh;">\
+                                    <span class="icon-sm">📞</span>\
+                                    <span class="text-oncall-label">On-Call</span>\
+                                </div>\
+                                <div class="text-oncall-name">' + onCallPerson + '</div>\
+                            </div>\
+                            <div>\
+                                <div class="flex-center gap-sm" style="margin-bottom: 0.2vh;">\
+                                    <span class="icon-sm">📚</span>\
+                                    <span class="text-oncall-label">Library</span>\
+                                </div>\
+                                <div class="text-oncall-name">' + libraryDutyPerson + '</div>\
+                            </div>\
+                            <div>\
+                                <div class="flex-center gap-sm" style="margin-bottom: 0.2vh;">\
+                                    <span class="icon-sm">🏀</span>\
+                                    <span class="text-oncall-label">Sports Hall</span>\
+                                </div>\
+                                <div class="text-oncall-name">' + sportsHallDutyPerson + '</div>\
+                            </div>\
+                        </div>\
                     </div>\
                 ';
             }
@@ -425,9 +540,7 @@
 
         function update() {
             currentTime = new Date();
-            if (!isLoading && !errorMessage) {
-                updateDuty(currentTime);
-            }
+            updateDuty(currentTime);
             render();
         }
 
