@@ -227,7 +227,7 @@
     <div id="app"></div>
 
     <script>
-        var GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTaV5LO0lckYcYAl-2NV3kut2k7TKxezMG5n7Kql2iTTtcg7Q9Lj_MfEgHlk8Y0pybHHkSLLojxmS7S/pub?gid=0&single=true&output=csv';
+        var GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTaV5LO0lckYcYAl-2NV3kut2k7TKxezMG5n7Kql2iTTtcg7Q9Lj_MfEgHlk8Y0pybHHkSLLojxmS7S/pub?output=csv';
         
         var shiftTimes = {
             day: { start: 8, end: 17, label: "Day Shift", icon: "☀️" },
@@ -281,7 +281,7 @@
                 if (!matches || matches.length < 3) continue;
                 
                 var dateString = matches[0].replace(/^"|"$/g, '').trim();
-                var shift = matches[1].replace(/^"|"$/g, '').trim().toLowerCase();
+                var shift = matches[1].replace(/^"|"$/g, '').trim().toLowerCase().replace(/\s+/g, '-');
                 var name = matches[2].replace(/^"|"$/g, '').trim();
                 var date = parseDate(dateString);
                 
@@ -331,7 +331,7 @@
             })
             .catch(function(error) {
                 console.error('Error loading schedule:', error);
-                errorMessage = 'Error loading schedule from Google Sheets';
+                errorMessage = 'Cannot load schedule. Check: 1) Sheet is published to web 2) URL is correct';
                 isLoading = false;
                 render();
             });
@@ -339,8 +339,8 @@
 
         function getCurrentShift(date) {
             var hour = date.getHours();
-            if (hour >= shiftTimes.day.start && hour < shiftTimes.day.end) return 'day';
-            if (hour >= shiftTimes.evening.start && hour < shiftTimes.evening.end) return 'evening';
+            if (hour >= 8 && hour < 17) return 'day';
+            if (hour >= 17 && hour < 23) return 'evening';
             return 'overnight';
         }
 
@@ -386,19 +386,26 @@
             });
             onCallPerson = onCallEntry ? onCallEntry.name : 'Not assigned';
             
-            // Library: No session on Friday, Saturday (except 10am-11:30am), Sunday
-            if (dayOfWeek === 5 || dayOfWeek === 0) {
+            // Library: Closed Friday, Saturday (except 10am-11:30am), Sunday
+            if (dayOfWeek === 5) {
                 libraryDutyPerson = 'Closed';
             } else if (dayOfWeek === 6) {
                 // Saturday: Open 10am-11:30am
-                if (timeInMinutes >= 600 && timeInMinutes < 690) { // 600 = 10am, 690 = 11:30am
+                if (timeInMinutes >= 600 && timeInMinutes <= 690) {
                     var libraryEntry = libraryDutySchedule.find(function(e) {
                         return isSameDate(e.date, date);
                     });
-                    libraryDutyPerson = libraryEntry ? libraryEntry.name : 'Open';
+                    // If entry exists and has valid name (not #N/A or empty), show name, otherwise show "Open"
+                    if (libraryEntry && libraryEntry.name && libraryEntry.name !== '#N/A' && libraryEntry.name.trim() !== '') {
+                        libraryDutyPerson = libraryEntry.name;
+                    } else {
+                        libraryDutyPerson = 'Open';
+                    }
                 } else {
                     libraryDutyPerson = 'Closed';
                 }
+            } else if (dayOfWeek === 0) {
+                libraryDutyPerson = 'Closed';
             } else {
                 var libraryEntry = libraryDutySchedule.find(function(e) {
                     return isSameDate(e.date, date);
@@ -406,16 +413,34 @@
                 libraryDutyPerson = libraryEntry ? libraryEntry.name : 'Not assigned';
             }
             
-            // Sports Hall: No session on Sunday, Saturday except 10am-11:30am
-            if (dayOfWeek === 0) {
-                sportsHallDutyPerson = 'Closed';
-            } else if (dayOfWeek === 6) {
+            // Sports Hall: Closed Sunday (except 2pm-4pm), Saturday (except 10am-11:30am)
+            if (dayOfWeek === 6) {
                 // Saturday: Open 10am-11:30am
-                if (timeInMinutes >= 600 && timeInMinutes < 690) { // 600 = 10am, 690 = 11:30am
+                if (timeInMinutes >= 600 && timeInMinutes <= 690) {
                     var sportsHallEntry = sportsHallDutySchedule.find(function(e) {
                         return isSameDate(e.date, date);
                     });
-                    sportsHallDutyPerson = sportsHallEntry ? sportsHallEntry.name : 'Open';
+                    // If entry exists and has valid name (not #N/A or empty), show name, otherwise show "Open"
+                    if (sportsHallEntry && sportsHallEntry.name && sportsHallEntry.name !== '#N/A' && sportsHallEntry.name.trim() !== '') {
+                        sportsHallDutyPerson = sportsHallEntry.name;
+                    } else {
+                        sportsHallDutyPerson = 'Open';
+                    }
+                } else {
+                    sportsHallDutyPerson = 'Closed';
+                }
+            } else if (dayOfWeek === 0) {
+                // Sunday: Open 2pm-4pm (840 minutes = 2:00pm, 960 minutes = 4:00pm)
+                if (timeInMinutes >= 840 && timeInMinutes <= 960) {
+                    var sportsHallEntry = sportsHallDutySchedule.find(function(e) {
+                        return isSameDate(e.date, date);
+                    });
+                    // If entry exists and has valid name (not #N/A or empty), show name, otherwise show "Open"
+                    if (sportsHallEntry && sportsHallEntry.name && sportsHallEntry.name !== '#N/A' && sportsHallEntry.name.trim() !== '') {
+                        sportsHallDutyPerson = sportsHallEntry.name;
+                    } else {
+                        sportsHallDutyPerson = 'Open';
+                    }
                 } else {
                     sportsHallDutyPerson = 'Closed';
                 }
@@ -540,7 +565,9 @@
 
         function update() {
             currentTime = new Date();
-            updateDuty(currentTime);
+            if (!isLoading && !errorMessage) {
+                updateDuty(currentTime);
+            }
             render();
         }
 
