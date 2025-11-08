@@ -71,10 +71,11 @@
         
         .header-section {
             -webkit-box-flex: 0;
-            -webkit-flex: 0 0 auto;
-            flex: 0 0 auto;
+            -webkit-flex: 0 1 auto;
+            flex: 0 1 auto;
             text-align: center;
             margin-bottom: 1vh;
+            position: relative;
         }
         
         .content-section {
@@ -92,14 +93,22 @@
             -webkit-justify-content: flex-start;
             justify-content: flex-start;
             min-height: 0;
-            overflow: hidden;
+            overflow: hidden; 
         }
         
         .footer-section {
             -webkit-box-flex: 0;
-            -webkit-flex: 0 0 auto;
-            flex: 0 0 auto;
-            margin-top: 1vh;
+            -webkit-flex: 0 1 auto;
+            flex: 0 1 auto;
+            margin-top: 0.5vh;
+        }
+        
+        .logo-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 25vh;  /* Adjust size as needed */
+            height: 25vh; /* Adjust size as needed */
         }
         
         .shift-badge {
@@ -126,7 +135,7 @@
             border-radius: 1.5rem;
             padding: 1.8vh 2vw;
             text-align: center;
-            margin-bottom: 1vh;
+            margin-bottom: 0.5vh;
         }
         
         .next-duty-card {
@@ -147,7 +156,7 @@
             border-radius: 0.75rem;
             padding: 0.8vh 1vw;
             text-align: center;
-            margin-top: 1vh;
+            margin-top: 0.5vh;
         }
         
         .duty-grid {
@@ -188,11 +197,14 @@
         .text-date { font-size: 2.5vh; color: #b45309; font-weight: 500; }
         .text-shift-label { font-size: 2.5vh; font-weight: 600; }
         .text-time { font-size: 2.5vh; color: #f59e0b; font-weight: 500; }
-        .text-duty-label { font-size: 3.5vh; color: #78350f; font-weight: 600; }
-        .text-duty-name { font-size: 8vh; color: #1c1917; font-weight: bold; }
-        .text-next-label { font-size: 2.5vh; color: #b45309; font-weight: 600; }
-        .text-next-shift { font-size: 1.8vh; color: #d97706; }
-        .text-next-name { font-size: 4.5vh; color: #78350f; font-weight: bold; }
+        
+        .text-duty-label { font-size: 3.0vh; color: #78350f; font-weight: 600; }
+        .text-duty-name { font-size: 7.0vh; color: #1c1917; font-weight: bold; }
+        
+        .text-next-label { font-size: 2.2vh; color: #b45309; font-weight: 600; }
+        .text-next-shift { font-size: 1.6vh; color: #d97706; }
+        .text-next-name { font-size: 4.2vh; color: #78350f; font-weight: bold; }
+        
         .text-schedule-label { font-size: 1.8vh; color: #92400e; font-weight: 600; }
         .text-schedule-time { font-size: 1.6vh; color: #d97706; }
         .text-footer { font-size: 1.6vh; color: #d97706; }
@@ -248,8 +260,63 @@
         var onCallPerson = '';
         var libraryDutyPerson = '';
         var sportsHallDutyPerson = '';
+        var weatherData = null;
         var isLoading = true;
         var errorMessage = '';
+
+        // =============================================
+        // === WEATHER FUNCTIONS ===
+        // =============================================
+
+        function loadWeather() {
+            var lat = 51.674020;
+            var lon = -1.289347;
+            
+            var weatherApiUrl = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current_weather=true';
+            
+            fetch(weatherApiUrl)
+            .then(function(response) {
+                if (!response.ok) throw new Error('Failed to fetch weather');
+                return response.json();
+            })
+            .then(function(data) {
+                if (data && data.current_weather) {
+                    weatherData = {
+                        temp: Math.round(data.current_weather.temperature),
+                        code: data.current_weather.weathercode
+                    };
+                    render(); // Re-render with new weather data
+                }
+            })
+            .catch(function(error) {
+                console.error('Error loading weather:', error);
+                weatherData = null; // Reset on error
+            });
+        }
+
+        function getWeatherIcon(code) {
+            switch (code) {
+                case 0: return '☀️'; // Clear sky
+                case 1: return '🌤️'; // Mainly clear
+                case 2: return '🌥️'; // Partly cloudy
+                case 3: return '☁️'; // Overcast
+                case 45: case 48: return '🌫️'; // Fog
+                case 51: case 53: case 55: return '🌦️'; // Drizzle
+                case 61: case 63: case 65: return '🌧️'; // Rain
+                case 66: case 67: return '🌧️'; // Freezing Rain
+                case 71: case 73: case 75: return '🌨️'; // Snow fall
+                case 77: return '🌨️'; // Snow grains
+                case 80: case 81: case 82: return '🌧️'; // Rain showers
+                case 85: case 86: return '🌨️'; // Snow showers
+                case 95: return '⛈️'; // Thunderstorm
+                case 96: case 99: return '⛈️'; // Thunderstorm with hail
+                default: return '🌡️'; // Default/unknown
+            }
+        }
+
+        // =============================================
+        // === END OF WEATHER FUNCTIONS ===
+        // =============================================
 
         function parseDate(dateString) {
             var parts = dateString.split('-');
@@ -469,10 +536,24 @@
             } else if (errorMessage) {
                 mainContent = '<div class="duty-card"><div class="text-duty-label" style="color: #dc2626; margin-bottom: 1vh;">⚠️ ' + errorMessage + '</div><div class="text-next-shift">Check the Google Sheets URL configuration</div></div>';
             } else {
+                
+                // === WEATHER DISPLAY LOGIC ===
+                // Default to shift icon
+                var weatherDisplay = shiftInfo.icon;
+                var weatherTemp = '';
+                
+                // If weather data is available, override with live weather
+                if (weatherData && weatherData.temp !== undefined) {
+                    var weatherIcon = getWeatherIcon(weatherData.code);
+                    weatherDisplay = weatherIcon;
+                    weatherTemp = ' ' + weatherData.temp + '°C';
+                }
+                // ==============================
+                
                 mainContent = '\
-                    <div style="text-align: center; margin-bottom: 1vh;">\
-                        <div class="shift-badge gap-sm">\
-                            <span class="icon-md">' + shiftInfo.icon + '</span>\
+                    <div style="text-align: center; margin-bottom: 0.5vh;">\
+                        <div class="shift-badge gap-sm" style="flex-direction: column; padding: 1.2vh 2.5vw;">\
+                            <span style="font-size: 2.2vh;">' + weatherDisplay + weatherTemp + '</span>\
                             <span class="text-shift-label">' + shiftInfo.label + '</span>\
                         </div>\
                         <div class="text-time" style="margin-top: 0.5vh;">' + timeString + '</div>\
@@ -506,7 +587,7 @@
                                 <div class="text-oncall-name">' + libraryDutyPerson + '</div>\
                             </div>\
                             <div>\
-                                <div class="flex-center gap-sm" style="margin-bottom: 0.2vh;">\
+                                <div classs="flex-center gap-sm" style="margin-bottom: 0.2vh;">\
                                     <span class="icon-sm">🏀</span>\
                                     <span class="text-oncall-label">Sports Hall</span>\
                                 </div>\
@@ -521,6 +602,9 @@
                 <div class="main-container">\
                     <div class="card">\
                         <div class="header-section">\
+                            \
+                            <img src="https://raw.githubusercontent.com/markjohnson-design/rota/refs/heads/main/Crescent%20Wolves.svg" alt="Logo" class="logo-svg" />\
+                            \
                             <h1 class="text-title"><span class="crescent-icon">🌙</span> Crescent House</h1>\
                             <div class="flex-center gap-sm" style="margin-top: 0.5vh;">\
                                 <span class="icon-sm">📅</span>\
@@ -573,8 +657,16 @@
 
         render();
         loadScheduleFromGoogleSheets();
+        loadWeather(); // This function now exists and will be called
+        
+        // Update display every minute
         setInterval(update, 60000);
+
+        // Reload schedule from Google Sheets every 5 minutes to pick up changes
         setInterval(loadScheduleFromGoogleSheets, 300000);
+        
+        // Reload weather every 10 minutes
+        setInterval(loadWeather, 600000); // 10 minutes
     </script>
 </body>
 </html>
