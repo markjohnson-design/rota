@@ -67,6 +67,7 @@
             -webkit-flex-direction: column;
             flex-direction: column;
             box-sizing: border-box;
+            position: relative;
         }
         
         .header-section {
@@ -75,7 +76,6 @@
             flex: 0 1 auto;
             text-align: center;
             margin-bottom: 1vh;
-            position: relative;
         }
         
         .content-section {
@@ -103,12 +103,14 @@
             margin-top: 0.5vh;
         }
         
+        /* === SVG LOGO STYLE UPDATED === */
         .logo-svg {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 25vh;  /* Adjust size as needed */
-            height: 25vh; /* Adjust size as needed */
+            top: 1.5vh;
+            left: 1.5vw;
+            /* Use the smaller value: 5% of height or 7% of width */
+            width: min(25vh, 15vw);
+            height: min(25vh, 15vw);
         }
         
         .shift-badge {
@@ -587,7 +589,8 @@
                                 <div class="text-oncall-name">' + libraryDutyPerson + '</div>\
                             </div>\
                             <div>\
-                                <div classs="flex-center gap-sm" style="margin-bottom: 0.2vh;">\
+                                \
+                                <div class="flex-center gap-sm" style="margin-bottom: 0.2vh;">\
                                     <span class="icon-sm">🏀</span>\
                                     <span class="text-oncall-label">Sports Hall</span>\
                                 </div>\
@@ -601,10 +604,9 @@
             document.getElementById('app').innerHTML = '\
                 <div class="main-container">\
                     <div class="card">\
+                        <img src="https://raw.githubusercontent.com/markjohnson-design/rota/refs/heads/main/Crescent%20Wolves.svg" alt="Logo" class="logo-svg" />\
+                        \
                         <div class="header-section">\
-                            \
-                            <img src="https://raw.githubusercontent.com/markjohnson-design/rota/refs/heads/main/Crescent%20Wolves.svg" alt="Logo" class="logo-svg" />\
-                            \
                             <h1 class="text-title"><span class="crescent-icon">🌙</span> Crescent House</h1>\
                             <div class="flex-center gap-sm" style="margin-top: 0.5vh;">\
                                 <span class="icon-sm">📅</span>\
