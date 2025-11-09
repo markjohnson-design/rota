@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Crescent House - Duty Display</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https.cdn.tailwindcss.com"></script>
     <style>
         html, body {
             margin: 0;
@@ -168,6 +168,12 @@
         .text-oncall-label { font-size: 2vh; color: #c2410c; font-weight: 600; }
         .text-oncall-name { font-size: 3.5vh; color: #9a3412; font-weight: bold; }
         
+        .text-oncall-subtext {
+            font-size: 1.8vh;
+            color: #9a3412;
+            line-height: 1.2;
+        }
+        
         .shift-time-box {
             background: rgba(245, 158, 11, 0.1);
             border: 1px solid rgba(245, 158, 11, 0.3);
@@ -251,7 +257,10 @@
         var onCallSchedule = [];
         var libraryDutySchedule = [];
         var sportsHallDutySchedule = [];
-        var currentTime = new Date();
+        
+        // === TIME SET TO LIVE ===
+        var currentTime = new Date(); 
+        
         var currentShift = '';
         var dutyPerson = '';
         var nextShift = '';
@@ -295,11 +304,10 @@
             });
         }
 
-        // === UPDATED with improved night icons ===
         function getWeatherIcon(code, is_day) {
             switch (code) {
                 case 0: // Clear sky
-                    return is_day ? '☀️' : '🌙'; // Changed '🌑' to '🌙' for theme
+                    return is_day ? '☀️' : '🌑';
                 case 1: // Mainly clear
                     return is_day ? '🌤️' : '☁️';
                 case 2: // Partly cloudy
@@ -309,7 +317,7 @@
                 case 45: case 48: // Fog
                     return '🌫️';
                 case 51: case 53: case 55: // Drizzle
-                    return is_day ? '🌦️' : '🌧️'; // <-- IMPROVEMENT: Shows rain at night, not sun
+                    return '🌦️';
                 case 61: case 63: case 65: // Rain
                     return '🌧️';
                 case 66: case 67: // Freezing Rain
@@ -474,22 +482,22 @@
             if (dayOfWeek === 5) {
                 libraryDutyPerson = 'Closed';
             } else if (dayOfWeek === 6) {
-                // Saturday: Open 10am-11:30am
-                if (timeInMinutes >= 600 && timeInMinutes <= 690) {
+                // Saturday: Show "Open" message *until* 11:30am (690 minutes)
+                if (timeInMinutes > 690) { // After 11:30am
+                    libraryDutyPerson = 'Closed';
+                } else {
+                    // Before and during opening time
                     var libraryEntry = libraryDutySchedule.find(function(e) {
                         return isSameDate(e.date, date);
                     });
-                    // If entry exists and has valid name (not #N/A or empty), show name, otherwise show "Open"
                     if (libraryEntry && libraryEntry.name && libraryEntry.name !== '#N/A' && libraryEntry.name.trim() !== '') {
                         libraryDutyPerson = libraryEntry.name;
                     } else {
-                        libraryDutyPerson = 'Open';
+                        libraryDutyPerson = 'Open|10am to 11.30am';
                     }
-                } else {
-                    libraryDutyPerson = 'Closed';
                 }
             } else if (dayOfWeek === 0) {
-                libraryDutyPerson = 'Closed';
+                libraryDutyPerson = 'Closed'; // Closed all day Sunday
             } else {
                 var libraryEntry = libraryDutySchedule.find(function(e) {
                     return isSameDate(e.date, date);
@@ -499,34 +507,34 @@
             
             // Sports Hall: Closed Sunday (except 2pm-4pm), Saturday (except 10am-11:30am)
             if (dayOfWeek === 6) {
-                // Saturday: Open 10am-11:30am
-                if (timeInMinutes >= 600 && timeInMinutes <= 690) {
+                // Saturday: Show "Open" message *until* 11:30am (690 minutes)
+                if (timeInMinutes > 690) { // After 11:30am
+                    sportsHallDutyPerson = 'Closed';
+                } else {
+                    // Before and during opening time
                     var sportsHallEntry = sportsHallDutySchedule.find(function(e) {
                         return isSameDate(e.date, date);
                     });
-                    // If entry exists and has valid name (not #N/A or empty), show name, otherwise show "Open"
                     if (sportsHallEntry && sportsHallEntry.name && sportsHallEntry.name !== '#N/A' && sportsHallEntry.name.trim() !== '') {
                         sportsHallDutyPerson = sportsHallEntry.name;
                     } else {
-                        sportsHallDutyPerson = 'Open';
+                        sportsHallDutyPerson = 'Open|10am to 11.30am';
                     }
-                } else {
-                    sportsHallDutyPerson = 'Closed';
                 }
             } else if (dayOfWeek === 0) {
-                // Sunday: Open 2pm-4pm (840 minutes = 2:00pm, 960 minutes = 4:00pm)
-                if (timeInMinutes >= 840 && timeInMinutes <= 960) {
+                // Sunday: Show "Open" message *until* 4pm (960 minutes)
+                if (timeInMinutes > 960) { // After 4:00pm
+                    sportsHallDutyPerson = 'Closed';
+                } else {
+                    // Before and during opening time
                     var sportsHallEntry = sportsHallDutySchedule.find(function(e) {
                         return isSameDate(e.date, date);
                     });
-                    // If entry exists and has valid name (not #N/A or empty), show name, otherwise show "Open"
                     if (sportsHallEntry && sportsHallEntry.name && sportsHallEntry.name !== '#N/A' && sportsHallEntry.name.trim() !== '') {
                         sportsHallDutyPerson = sportsHallEntry.name;
                     } else {
-                        sportsHallDutyPerson = 'Open';
+                        sportsHallDutyPerson = 'Open|2pm - 4pm';
                     }
-                } else {
-                    sportsHallDutyPerson = 'Closed';
                 }
             } else {
                 var sportsHallEntry = sportsHallDutySchedule.find(function(e) {
@@ -555,18 +563,33 @@
             } else {
                 
                 // === WEATHER DISPLAY LOGIC ===
-                // Default to shift icon
                 var weatherDisplay = shiftInfo.icon;
                 var weatherTemp = '';
-                
-                // If weather data is available, override with live weather
                 if (weatherData && weatherData.temp !== undefined) {
-                    // === UPDATED to pass 'is_day' ===
                     var weatherIcon = getWeatherIcon(weatherData.code, weatherData.is_day);
                     weatherDisplay = weatherIcon;
                     weatherTemp = ' ' + weatherData.temp + '°C';
                 }
-                // ==============================
+                
+                // === LOGIC FOR TWO-LINE DISPLAY ===
+                var libraryDisplay;
+                if (libraryDutyPerson.includes('|')) {
+                    var parts = libraryDutyPerson.split('|');
+                    libraryDisplay = '<div class="text-oncall-name">' + parts[0] + '</div>' +
+                                     '<div class="text-oncall-subtext">' + parts[1] + '</div>';
+                } else {
+                    libraryDisplay = '<div class="text-oncall-name">' + libraryDutyPerson + '</div>';
+                }
+
+                var sportsHallDisplay;
+                if (sportsHallDutyPerson.includes('|')) {
+                    var parts = sportsHallDutyPerson.split('|');
+                    sportsHallDisplay = '<div class="text-oncall-name">' + parts[0] + '</div>' +
+                                        '<div class="text-oncall-subtext">' + parts[1] + '</div>';
+                } else {
+                    sportsHallDisplay = '<div class="text-oncall-name">' + sportsHallDutyPerson + '</div>';
+                }
+                // ===================================
                 
                 mainContent = '\
                     <div style="text-align: center; margin-bottom: 0.5vh;">\
@@ -602,14 +625,14 @@
                                     <span class="icon-sm">📚</span>\
                                     <span class="text-oncall-label">Library</span>\
                                 </div>\
-                                <div class="text-oncall-name">' + libraryDutyPerson + '</div>\
+                                ' + libraryDisplay + '\
                             </div>\
                             <div>\
                                 <div class="flex-center gap-sm" style="margin-bottom: 0.2vh;">\
                                     <span class="icon-sm">🏀</span>\
                                     <span class="text-oncall-label">Sports Hall</span>\
                                 </div>\
-                                <div class="text-oncall-name">' + sportsHallDutyPerson + '</div>\
+                                ' + sportsHallDisplay + '\
                             </div>\
                         </div>\
                     </div>\
@@ -665,7 +688,9 @@
         }
 
         function update() {
-            currentTime = new Date();
+            // === CLOCK IS LIVE ===
+            currentTime = new Date(); 
+            
             if (!isLoading && !errorMessage) {
                 updateDuty(currentTime);
             }
@@ -674,16 +699,13 @@
 
         render();
         loadScheduleFromGoogleSheets();
-        loadWeather();
+        loadWeather(); 
         
-        // Update display every minute
-        setInterval(update, 60000);
-
-        // Reload schedule from Google Sheets every 5 minutes to pick up changes
+        // === CLOCK UPDATE IS LIVE ===
+        setInterval(update, 60000); 
+        
         setInterval(loadScheduleFromGoogleSheets, 300000);
-        
-        // Reload weather every 10 minutes
-        setInterval(loadWeather, 600000); // 10 minutes
+        setInterval(loadWeather, 600000); 
     </script>
 </body>
 </html>
