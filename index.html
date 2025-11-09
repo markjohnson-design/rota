@@ -100,7 +100,8 @@
             -webkit-box-flex: 0;
             -webkit-flex: 0 1 auto;
             flex: 0 1 auto;
-            margin-top: 0.5vh;
+            /* === CHANGED: Pushes footer to bottom of card === */
+            margin-top: auto; 
         }
         
         .logo-svg {
@@ -205,7 +206,8 @@
         .text-time { font-size: 2.5vh; color: #f59e0b; font-weight: 500; }
         
         .text-duty-label { font-size: 3.0vh; color: #78350f; font-weight: 600; }
-        .text-duty-name { font-size: 7.0vh; color: #1c1917; font-weight: bold; }
+        /* === FONT SIZE REDUCED === */
+        .text-duty-name { font-size: 6.5vh; color: #1c1917; font-weight: bold; }
         
         .text-next-label { font-size: 2.2vh; color: #b45309; font-weight: 600; }
         .text-next-shift { font-size: 1.6vh; color: #d97706; }
@@ -258,7 +260,6 @@
         var libraryDutySchedule = [];
         var sportsHallDutySchedule = [];
         
-        // === TIME SET TO LIVE ===
         var currentTime = new Date(); 
         
         var currentShift = '';
@@ -552,7 +553,9 @@
 
         function render() {
             var shiftInfo = shiftTimes[currentShift];
-            var timeString = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            // === TIME FORMAT UPDATED ===
+            var timeString = currentTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
             
             var mainContent;
             
@@ -688,7 +691,6 @@
         }
 
         function update() {
-            // === CLOCK IS LIVE ===
             currentTime = new Date(); 
             
             if (!isLoading && !errorMessage) {
@@ -701,7 +703,6 @@
         loadScheduleFromGoogleSheets();
         loadWeather(); 
         
-        // === CLOCK UPDATE IS LIVE ===
         setInterval(update, 60000); 
         
         setInterval(loadScheduleFromGoogleSheets, 300000);
