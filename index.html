@@ -376,19 +376,31 @@
                 if (!matches || matches.length < 3) continue;
                 
                 var dateString = matches[0].replace(/^"|"$/g, '').trim();
-                var shift = matches[1].replace(/^"|"$/g, '').trim().toLowerCase().replace(/\s+/g, '-');
+                // Get the raw shift name, just cleaned and lowercased
+                var shift = matches[1].replace(/^"|"$/g, '').trim().toLowerCase();
                 var name = matches[2].replace(/^"|"$/g, '').trim();
                 var date = parseDate(dateString);
                 
-                if (date && shift === 'on-call') {
+                // === START OF FIX ===
+                // This logic is now flexible and normalizes the shift names
+                
+                if (date && (shift === 'on-call' || shift === 'on call')) {
                     onCall.push({ date: date, name: name });
-                } else if (date && shift === 'library') {
+                } else if (date && shift.startsWith('library')) {
                     libraryDuty.push({ date: date, name: name });
-                } else if (date && shift === 'sports-hall') {
+                } else if (date && (shift === 'sports-hall' || shift === 'sports hall')) {
                     sportsHallDuty.push({ date: date, name: name });
-                } else if (date && (shift === 'day' || shift === 'evening' || shift === 'overnight')) {
-                    schedule.push({ date: date, shift: shift, name: name });
+                } else if (date && shift.startsWith('day')) {
+                    // Pushes 'day' regardless of 'day' or 'day shift'
+                    schedule.push({ date: date, shift: 'day', name: name });
+                } else if (date && shift.startsWith('evening')) {
+                    // Pushes 'evening'
+                    schedule.push({ date: date, shift: 'evening', name: name });
+                } else if (date && shift.startsWith('overnight')) {
+                    // Pushes 'overnight'
+                    schedule.push({ date: date, shift: 'overnight', name: name });
                 }
+                // === END OF FIX ===
             }
             return { schedule: schedule, onCall: onCall, libraryDuty: libraryDuty, sportsHallDuty: sportsHallDuty };
         }
@@ -445,15 +457,28 @@
             return 'day';
         }
 
+        // ===================================
+        // === FIX #2 - REPLACED FUNCTION ===
+        // ===================================
         function getNextShiftDate(date, currentShift) {
-            if (currentShift === 'overnight') {
+            var hours = date.getHours();
+
+            // The next shift ('day') is only on "tomorrow" if the
+            // current overnight shift is between 11pm and midnight.
+            if (currentShift === 'overnight' && hours >= 23) {
                 var tomorrow = new Date(date);
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 return tomorrow;
             }
+            
+            // For 'day', 'evening', and 00:00-08:00 'overnight',
+            // the next shift starts on the *same* calendar day.
             return date;
         }
 
+        // ===================================
+        // === FIX #1 - MODIFIED FUNCTION ===
+        // ===================================
         function updateDuty(date) {
             var shift = getCurrentShift(date);
             currentShift = shift;
@@ -462,9 +487,18 @@
             var hours = date.getHours();
             var minutes = date.getMinutes();
             var timeInMinutes = hours * 60 + minutes;
+
+            // === FIX: Determine the correct date to search for ===
+            var searchDate = new Date(date);
+            if (shift === 'overnight' && hours < 8) {
+                // If it's after midnight (before 8am), the shift *started* yesterday.
+                searchDate.setDate(searchDate.getDate() - 1);
+            }
+            // ====================================================
             
             var entry = dutySchedule.find(function(e) {
-                return isSameDate(e.date, date) && e.shift === shift;
+                // Use the new 'searchDate' variable instead of 'date'
+                return isSameDate(e.date, searchDate) && e.shift === shift;
             });
             dutyPerson = entry ? entry.name : 'No duty assigned';
 
