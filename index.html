@@ -17,21 +17,16 @@
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #fde68a;
-            background: -webkit-linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+            /* === REFINEMENT: Removed -webkit- prefix === */
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
         }
         
         #app {
             width: 100vw;
             height: 100vh;
-            display: -webkit-box;
-            display: -webkit-flex;
+            /* === REFINEMENT: Removed -webkit- prefixes === */
             display: flex;
-            -webkit-box-align: center;
-            -webkit-align-items: center;
             align-items: center;
-            -webkit-box-pack: center;
-            -webkit-justify-content: center;
             justify-content: center;
             padding: 2vh 2vw;
             box-sizing: border-box;
@@ -42,65 +37,46 @@
             height: 100%;
             max-width: 1200px;
             max-height: 100%;
-            display: -webkit-box;
-            display: -webkit-flex;
+            /* === REFINEMENT: Removed -webkit- prefixes === */
             display: flex;
-            -webkit-box-orient: vertical;
-            -webkit-box-direction: normal;
-            -webkit-flex-direction: column;
             flex-direction: column;
             box-sizing: border-box;
         }
         
         .card {
             background: rgba(255, 255, 255, 0.95);
-            -webkit-box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            /* === REFINEMENT: Removed -webkit- prefix === */
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             border-radius: 1.5rem;
             padding: 2vh;
             height: 100%;
-            display: -webkit-box;
-            display: -webkit-flex;
+            /* === REFINEMENT: Removed -webkit- prefixes === */
             display: flex;
-            -webkit-box-orient: vertical;
-            -webkit-box-direction: normal;
-            -webkit-flex-direction: column;
             flex-direction: column;
             box-sizing: border-box;
             position: relative;
         }
         
         .header-section {
-            -webkit-box-flex: 0;
-            -webkit-flex: 0 1 auto;
+            /* === REFINEMENT: Removed -webkit- prefixes === */
             flex: 0 1 auto;
             text-align: center;
             margin-bottom: 1vh;
         }
         
         .content-section {
-            -webkit-box-flex: 1;
-            -webkit-flex: 1 1 auto;
+            /* === REFINEMENT: Removed -webkit- prefixes === */
             flex: 1 1 auto;
-            display: -webkit-box;
-            display: -webkit-flex;
             display: flex;
-            -webkit-box-orient: vertical;
-            -webkit-box-direction: normal;
-            -webkit-flex-direction: column;
             flex-direction: column;
-            -webkit-box-pack: start;
-            -webkit-justify-content: flex-start;
             justify-content: flex-start;
             min-height: 0;
             overflow: hidden; 
         }
         
         .footer-section {
-            -webkit-box-flex: 0;
-            -webkit-flex: 0 1 auto;
+            /* === REFINEMENT: Removed -webkit- prefixes === */
             flex: 0 1 auto;
-            /* === This pushes the footer to the bottom === */
             margin-top: auto; 
         }
         
@@ -114,13 +90,10 @@
         
         .shift-badge {
             background: #f59e0b;
-            background: -webkit-linear-gradient(135deg, #f59e0b, #d97706);
+            /* === REFINEMENT: Removed -webkit- prefix === */
             background: linear-gradient(135deg, #f59e0b, #d97706);
-            display: -webkit-inline-box;
-            display: -webkit-inline-flex;
+            /* === REFINEMENT: Removed -webkit- prefixes === */
             display: inline-flex;
-            -webkit-box-align: center;
-            -webkit-align-items: center;
             align-items: center;
             color: white;
             padding: 1vh 2vw;
@@ -130,11 +103,10 @@
         
         .duty-card {
             background: #fffbeb;
-            background: -webkit-linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            /* === REFINEMENT: Removed -webkit- prefix === */
             background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
             border: 3px solid #f59e0b;
             border-radius: 1.5rem;
-            /* === PADDING REDUCED === */
             padding: 1.5vh 2vw;
             text-align: center;
             margin-bottom: 0.5vh;
@@ -142,18 +114,17 @@
         
         .next-duty-card {
             background: #ffffff;
-            background: -webkit-linear-gradient(135deg, #ffffff 0%, #fefce8 100%);
+            /* === REFINEMENT: Removed -webkit- prefix === */
             background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%);
             border: 2px solid #fbbf24;
             border-radius: 1rem;
-            /* === PADDING REDUCED === */
             padding: 1.0vh 2vw;
             text-align: center;
         }
         
         .oncall-card {
             background: #ffffff;
-            background: -webkit-linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            /* === REFINEMENT: Removed -webkit- prefix === */
             background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
             border: 2px solid #fb923c;
             border-radius: 0.75rem;
@@ -168,11 +139,22 @@
             gap: 1vw;
         }
         
-        .text-oncall-label { font-size: 2vh; color: #c2410c; font-weight: 600; }
-        .text-oncall-name { font-size: 3.5vh; color: #9a3412; font-weight: bold; }
+        /* === REFINEMENT: Changed vh to vmin === */
+        .text-oncall-label { font-size: 2vmin; color: #c2410c; font-weight: 600; }
         
+        /* === REFINEMENT: Changed vh to vmin AND added wrap/overflow control === */
+        .text-oncall-name { 
+            font-size: 3.5vmin; 
+            color: #9a3412; 
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* === REFINEMENT: Changed vh to vmin === */
         .text-oncall-subtext {
-            font-size: 1.8vh;
+            font-size: 1.8vmin;
             color: #9a3412;
             line-height: 1.2;
         }
@@ -187,51 +169,41 @@
         
         .crescent-icon {
             display: inline-block;
-            -webkit-animation: float 3s ease-in-out infinite;
+            /* === REFINEMENT: Removed -webkit- prefix === */
             animation: float 3s ease-in-out infinite;
         }
         
-        @-webkit-keyframes float {
-            0%, 100% { -webkit-transform: translateY(0px); transform: translateY(0px); }
-            50% { -webkit-transform: translateY(-5px); transform: translateY(-5px); }
-        }
-        
+        /* === REFINEMENT: Removed -webkit- keyframes === */
         @keyframes float {
-            0%, 100% { -webkit-transform: translateY(0px); transform: translateY(0px); }
-            50% { -webkit-transform: translateY(-5px); transform: translateY(-5px); }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
         }
         
-        /* Responsive text sizes using vh units */
-        .text-title { font-size: 5vh; font-weight: bold; color: #78350f; }
-        .text-date { font-size: 2.5vh; color: #b45309; font-weight: 500; }
-        .text-shift-label { font-size: 2.5vh; font-weight: 600; }
-        .text-time { font-size: 2.5vh; color: #f59e0b; font-weight: 500; }
+        /* === REFINEMENT: Changed all font vh to vmin === */
+        .text-title { font-size: 5vmin; font-weight: bold; color: #78350f; }
+        .text-date { font-size: 2.5vmin; color: #b45309; font-weight: 500; }
+        .text-shift-label { font-size: 2.5vmin; font-weight: 600; }
+        .text-time { font-size: 2.5vmin; color: #f59e0b; font-weight: 500; }
         
-        .text-duty-label { font-size: 3.0vh; color: #78350f; font-weight: 600; }
-        /* === FONT SIZE REDUCED === */
-        .text-duty-name { font-size: 6.0vh; color: #1c1917; font-weight: bold; }
+        .text-duty-label { font-size: 3.0vmin; color: #78350f; font-weight: 600; }
+        .text-duty-name { font-size: 6.0vmin; color: #1c1917; font-weight: bold; }
         
-        .text-next-label { font-size: 2.2vh; color: #b45309; font-weight: 600; }
-        .text-next-shift { font-size: 1.6vh; color: #d97706; }
-        .text-next-name { font-size: 4.2vh; color: #78350f; font-weight: bold; }
+        .text-next-label { font-size: 2.2vmin; color: #b45309; font-weight: 600; }
+        .text-next-shift { font-size: 1.6vmin; color: #d97706; }
+        .text-next-name { font-size: 4.2vmin; color: #78350f; font-weight: bold; }
         
-        .text-schedule-label { font-size: 1.8vh; color: #92400e; font-weight: 600; }
-        .text-schedule-time { font-size: 1.6vh; color: #d97706; }
-        .text-footer { font-size: 1.6vh; color: #d97706; }
+        .text-schedule-label { font-size: 1.8vmin; color: #92400e; font-weight: 600; }
+        .text-schedule-time { font-size: 1.6vmin; color: #d97706; }
+        .text-footer { font-size: 1.6vmin; color: #d97706; }
         
-        .icon-sm { font-size: 2.5vh; }
-        .icon-md { font-size: 3vh; }
-        .icon-lg { font-size: 4vh; }
+        .icon-sm { font-size: 2.5vmin; }
+        .icon-md { font-size: 3vmin; }
+        .icon-lg { font-size: 4vmin; }
         
         .flex-center {
-            display: -webkit-box;
-            display: -webkit-flex;
+            /* === REFINEMENT: Removed -webkit- prefixes === */
             display: flex;
-            -webkit-box-align: center;
-            -webkit-align-items: center;
             align-items: center;
-            -webkit-box-pack: center;
-            -webkit-justify-content: center;
             justify-content: center;
         }
         
@@ -249,6 +221,9 @@
     <div id="app"></div>
 
     <script>
+        // === JAVASCRIPT LOGIC REMAINS UNCHANGED ===
+        // === No changes were needed to the <script> block ===
+
         var GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTaV5LO0lckYcYAl-2NV3kut2k7TKxezMG5n7Kql2iTTtcg7Q9Lj_MfEgHlk8Y0pybHHkSLLojxmS7S/pub?output=csv';
         
         var shiftTimes = {
@@ -634,7 +609,7 @@
                 mainContent = '\
                     <div style="text-align: center; margin-bottom: 0.5vh;">\
                         <div class="shift-badge gap-sm" style="flex-direction: column; padding: 1.2vh 2.5vw;">\
-                            <span style="font-size: 2.2vh;">' + weatherDisplay + weatherTemp + '</span>\
+                            <span style="font-size: 2.2vmin;">' + weatherDisplay + weatherTemp + '</span>\
                             <span class="text-shift-label">' + shiftInfo.label + '</span>\
                         </div>\
                         <div class="text-time" style="margin-top: 0.5vh;">' + timeString + '</div>\
