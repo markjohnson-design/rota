@@ -4,40 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>Crescent House - Duty Display</title>
-    <script src="https.cdn.tailwindcss.com"></script>
     <style>
+        /* === BASE STYLES === */
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+            margin: 0; padding: 0; width: 100%; height: 100%;
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #fde68a;
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
         }
         
         #app {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2vh 2vw;
-            box-sizing: border-box;
+            width: 100vw; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 2vh 2vw; box-sizing: border-box;
         }
         
         .main-container {
-            width: 100%;
-            height: 100%;
-            max-width: 1200px;
-            max-height: 100%;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
+            width: 100%; height: 100%; max-width: 1200px;
+            display: flex; flex-direction: column;
         }
         
         .card {
@@ -46,315 +31,137 @@
             border-radius: 1.5rem;
             padding: 2vh;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
+            display: flex; flex-direction: column;
             position: relative;
         }
+
+        /* === SECTIONS === */
+        .header-section { flex: 0 1 auto; text-align: center; margin-bottom: 1vh; }
+        .content-section { flex: 1 1 auto; display: flex; flex-direction: column; overflow: hidden; }
+        .footer-section { flex: 0 1 auto; margin-top: auto; }
         
-        .header-section {
-            flex: 0 1 auto;
-            text-align: center;
-            margin-bottom: 1vh;
-        }
-        
-        .content-section {
-            flex: 1 1 auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            min-height: 0;
-            overflow: hidden; 
-        }
-        
-        .footer-section {
-            flex: 0 1 auto;
-            margin-top: auto; 
-        }
-        
+        /* === COMPONENTS === */
         .logo-svg {
-            position: absolute;
-            top: 1.5vh;
-            left: 1.5vw;
-            width: min(25vh, 15vw);
-            height: min(25vh, 15vw);
+            position: absolute; top: 1.5vh; left: 1.5vw;
+            width: min(25vh, 15vw); height: min(25vh, 15vw);
         }
         
         .shift-badge {
-            background: #f59e0b;
             background: linear-gradient(135deg, #f59e0b, #d97706);
-            display: inline-flex;
-            align-items: center;
-            color: white;
-            padding: 1vh 2vw;
-            border-radius: 9999px;
-            font-weight: 600;
+            display: inline-flex; align-items: center;
+            color: white; padding: 1vh 2vw;
+            border-radius: 9999px; font-weight: 600;
         }
         
         .duty-card {
-            background: #fffbeb;
             background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-            border: 3px solid #f59e0b;
-            border-radius: 1.5rem;
-            padding: 1.5vh 2vw;
-            text-align: center;
-            margin-bottom: 0.5vh;
+            border: 3px solid #f59e0b; border-radius: 1.5rem;
+            padding: 1.5vh 2vw; text-align: center; margin-bottom: 0.5vh;
         }
         
         .next-duty-card {
-            background: #ffffff;
             background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%);
-            border: 2px solid #fbbf24;
-            border-radius: 1rem;
-            padding: 1.0vh 2vw;
-            text-align: center;
+            border: 2px solid #fbbf24; border-radius: 1rem;
+            padding: 1.0vh 2vw; text-align: center;
         }
         
         .oncall-card {
-            background: #ffffff;
             background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
-            border: 2px solid #fb923c;
-            border-radius: 0.75rem;
-            padding: 0.8vh 1vw;
-            text-align: center;
-            margin-top: 0.5vh;
-        }
-        
-        .duty-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1vw;
-        }
-        
-        .text-oncall-label { font-size: 2vmin; color: #c2410c; font-weight: 600; }
-        
-        .text-oncall-name { 
-            font-size: 3.5vmin; 
-            color: #9a3412; 
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .text-oncall-subtext {
-            font-size: 1.8vmin;
-            color: #9a3412;
-            line-height: 1.2;
+            border: 2px solid #fb923c; border-radius: 0.75rem;
+            padding: 0.8vh 1vw; text-align: center; margin-top: 0.5vh;
         }
         
         .shift-time-box {
             background: rgba(245, 158, 11, 0.1);
             border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 0.75rem;
-            padding: 1vh 1vw;
-            text-align: center;
+            border-radius: 0.75rem; padding: 1vh 1vw; text-align: center;
         }
-        
-        .crescent-icon {
-            display: inline-block;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-        }
-        
+
+        /* === TYPOGRAPHY & ICONS === */
         .text-title { font-size: 5vmin; font-weight: bold; color: #78350f; }
         .text-date { font-size: 2.5vmin; color: #b45309; font-weight: 500; }
         .text-shift-label { font-size: 2.5vmin; font-weight: 600; }
         .text-time { font-size: 2.5vmin; color: #f59e0b; font-weight: 500; }
-        
         .text-duty-label { font-size: 3.0vmin; color: #78350f; font-weight: 600; }
         .text-duty-name { font-size: 6.0vmin; color: #1c1917; font-weight: bold; }
-        
         .text-next-label { font-size: 2.2vmin; color: #b45309; font-weight: 600; }
         .text-next-shift { font-size: 1.6vmin; color: #d97706; }
         .text-next-name { font-size: 4.2vmin; color: #78350f; font-weight: bold; }
-        
+        .text-oncall-label { font-size: 2vmin; color: #c2410c; font-weight: 600; }
+        .text-oncall-subtext { font-size: 1.8vmin; color: #9a3412; line-height: 1.2; }
         .text-schedule-label { font-size: 1.8vmin; color: #92400e; font-weight: 600; }
         .text-schedule-time { font-size: 1.6vmin; color: #d97706; }
         .text-footer { font-size: 1.6vmin; color: #d97706; }
-        
+
+        .text-oncall-name { 
+            font-size: 3.5vmin; color: #9a3412; font-weight: bold;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
         .icon-sm { font-size: 2.5vmin; }
         .icon-md { font-size: 3vmin; }
         .icon-lg { font-size: 4vmin; }
         
-        .flex-center {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
+        .crescent-icon { display: inline-block; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-5px); } }
+
+        /* === UTILITIES === */
+        .flex-center { display: flex; align-items: center; justify-content: center; }
         .gap-sm { gap: 1vh; }
         .gap-md { gap: 1.5vh; }
-        
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1vh;
-        }
+        .duty-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1vw; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1vh; }
     </style>
 </head>
 <body>
     <div id="app"></div>
 
     <script>
+        // CONFIGURATION
         var GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTaV5LO0lckYcYAl-2NV3kut2k7TKxezMG5n7Kql2iTTtcg7Q9Lj_MfEgHlk8Y0pybHHkSLLojxmS7S/pub?output=csv';
-        
+        var WEATHER_LAT = 51.674020;
+        var WEATHER_LON = -1.289347;
+
         var shiftTimes = {
             day: { start: 8, end: 17, label: "Day Shift", icon: "☀️" },
             evening: { start: 17, end: 23, label: "Evening Shift", icon: "🌅" },
             overnight: { start: 23, end: 8, label: "Overnight Shift", icon: "🌙" }
         };
 
-        var dutySchedule = [];
-        var onCallSchedule = [];
-        var libraryDutySchedule = [];
-        var sportsHallDutySchedule = [];
-        
-        var currentTime = new Date(); 
-        
-        var currentShift = '';
-        var dutyPerson = '';
-        var nextShift = '';
-        var nextDutyPerson = '';
-        var nextShiftTime = '';
-        var onCallPerson = '';
-        var libraryDutyPerson = '';
-        var sportsHallDutyPerson = '';
+        // STATE
+        var dutySchedule = [], onCallSchedule = [], libraryDutySchedule = [], sportsHallDutySchedule = [];
         var weatherData = null;
         var isLoading = true;
         var errorMessage = '';
+        var currentTime = new Date();
 
-        // =============================================
-        // === WEATHER FUNCTIONS ===
-        // =============================================
-
+        // --- DATA FETCHING ---
         function loadWeather() {
-            var lat = 51.674020;
-            var lon = -1.289347;
-            
-            var weatherApiUrl = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current_weather=true';
-            
-            fetch(weatherApiUrl)
-            .then(function(response) {
-                if (!response.ok) throw new Error('Failed to fetch weather');
-                return response.json();
-            })
-            .then(function(data) {
-                if (data && data.current_weather) {
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${WEATHER_LAT}&longitude=${WEATHER_LON}&current_weather=true`)
+            .then(r => r.ok ? r.json() : Promise.reject('Weather fetch failed'))
+            .then(data => {
+                if (data?.current_weather) {
                     weatherData = {
                         temp: Math.round(data.current_weather.temperature),
                         code: data.current_weather.weathercode,
-                        is_day: data.current_weather.is_day 
+                        is_day: data.current_weather.is_day
                     };
-                    render(); 
+                    render();
                 }
             })
-            .catch(function(error) {
-                console.error('Error loading weather:', error);
-                weatherData = null; 
-            });
-        }
-
-        function getWeatherIcon(code, is_day) {
-            switch (code) {
-                case 0: return is_day ? '☀️' : '🌑';
-                case 1: return is_day ? '🌤️' : '☁️';
-                case 2: return is_day ? '🌥️' : '☁️';
-                case 3: return '☁️';
-                case 45: case 48: return '🌫️';
-                case 51: case 53: case 55: return '🌦️';
-                case 61: case 63: case 65: return '🌧️';
-                case 66: case 67: return '🌧️';
-                case 71: case 73: case 75: return '🌨️';
-                case 77: return '🌨️';
-                case 80: case 81: case 82: return '🌧️';
-                case 85: case 86: return '🌨️';
-                case 95: return '⛈️';
-                case 96: case 99: return '⛈️';
-                default: return '🌡️'; 
-            }
-        }
-
-        // =============================================
-        // === END OF WEATHER FUNCTIONS ===
-        // =============================================
-
-        function parseDate(dateString) {
-            var parts = dateString.split('-');
-            if (parts.length !== 3) return null;
-            var year = parseInt(parts[0]);
-            var month = parseInt(parts[1]) - 1;
-            var day = parseInt(parts[2]);
-            return new Date(year, month, day);
-        }
-
-        function isSameDate(date1, date2) {
-            return date1.getFullYear() === date2.getFullYear() &&
-                   date1.getMonth() === date2.getMonth() &&
-                   date1.getDate() === date2.getDate();
-        }
-
-        function parseCSV(csv) {
-            var lines = csv.split('\n').filter(function(line) { return line.trim(); });
-            var schedule = [];
-            var onCall = [];
-            var libraryDuty = [];
-            var sportsHallDuty = [];
-            
-            for (var i = 1; i < lines.length; i++) {
-                var line = lines[i].trim();
-                if (!line) continue;
-                
-                var matches = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
-                if (!matches || matches.length < 3) continue;
-                
-                var dateString = matches[0].replace(/^"|"$/g, '').trim();
-                var shift = matches[1].replace(/^"|"$/g, '').trim().toLowerCase();
-                var name = matches[2].replace(/^"|"$/g, '').trim();
-                var date = parseDate(dateString);
-                
-                if (date && (shift === 'on-call' || shift === 'on call')) {
-                    onCall.push({ date: date, name: name });
-                } else if (date && shift.startsWith('library')) {
-                    libraryDuty.push({ date: date, name: name });
-                } else if (date && (shift === 'sports-hall' || shift === 'sports hall')) {
-                    sportsHallDuty.push({ date: date, name: name });
-                } else if (date && shift.startsWith('day')) {
-                    schedule.push({ date: date, shift: 'day', name: name });
-                } else if (date && shift.startsWith('evening')) {
-                    schedule.push({ date: date, shift: 'evening', name: name });
-                } else if (date && shift.startsWith('overnight')) {
-                    schedule.push({ date: date, shift: 'overnight', name: name });
-                }
-            }
-            return { schedule: schedule, onCall: onCall, libraryDuty: libraryDuty, sportsHallDuty: sportsHallDuty };
+            .catch(e => console.error('Weather error:', e));
         }
 
         function loadScheduleFromGoogleSheets() {
-            if (GOOGLE_SHEET_URL === 'YOUR_GOOGLE_SHEET_CSV_URL_HERE') {
-                errorMessage = 'Please configure Google Sheets URL';
-                isLoading = false;
-                render();
-                return;
+            if (GOOGLE_SHEET_URL.includes('YOUR_GOOGLE_SHEET')) {
+                errorMessage = 'Configuration Error'; isLoading = false; render(); return;
             }
             
-            var timestamp = new Date().getTime();
-            var urlWithTimestamp = GOOGLE_SHEET_URL + '&_=' + timestamp;
-            var proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(urlWithTimestamp);
+            var proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(GOOGLE_SHEET_URL + '&_=' + new Date().getTime());
             
-            fetch(proxyUrl, {
-                cache: 'no-store',
-                headers: { 'Cache-Control': 'no-cache' }
-            })
-            .then(function(response) {
-                if (!response.ok) throw new Error('Failed to fetch schedule');
-                return response.text();
-            })
-            .then(function(csvText) {
+            fetch(proxyUrl, { cache: 'no-store' })
+            .then(r => r.ok ? r.text() : Promise.reject('Schedule fetch failed'))
+            .then(csvText => {
                 var parsed = parseCSV(csvText);
                 dutySchedule = parsed.schedule;
                 onCallSchedule = parsed.onCall;
@@ -365,303 +172,194 @@
                 updateDuty(currentTime);
                 render();
             })
-            .catch(function(error) {
-                console.error('Error loading schedule:', error);
-                errorMessage = 'Cannot load schedule. Check: 1) Sheet is published to web 2) URL is correct';
+            .catch(e => {
+                console.error('Schedule error:', e);
+                errorMessage = 'Error loading schedule';
                 isLoading = false;
                 render();
             });
         }
 
-        function getCurrentShift(date) {
-            var hour = date.getHours();
-            if (hour >= 8 && hour < 17) return 'day';
-            if (hour >= 17 && hour < 23) return 'evening';
-            return 'overnight';
+        // --- HELPERS ---
+        function parseDate(str) {
+            var p = str.split('-');
+            return p.length === 3 ? new Date(p[0], p[1] - 1, p[2]) : null;
         }
 
-        function getNextShift(currentShift) {
-            if (currentShift === 'day') return 'evening';
-            if (currentShift === 'evening') return 'overnight';
-            return 'day';
+        function isSameDate(d1, d2) {
+            return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
         }
 
-        function getNextShiftDate(date, currentShift) {
-            var hours = date.getHours();
-            if (currentShift === 'overnight' && hours >= 23) {
-                var tomorrow = new Date(date);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                return tomorrow;
+        function parseCSV(csv) {
+            var lines = csv.split('\n').filter(l => l.trim());
+            var res = { schedule: [], onCall: [], libraryDuty: [], sportsHallDuty: [] };
+            
+            for (var i = 1; i < lines.length; i++) {
+                var m = lines[i].match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
+                if (!m || m.length < 3) continue;
+                
+                var date = parseDate(m[0].replace(/^"|"$/g, '').trim());
+                var shift = m[1].replace(/^"|"$/g, '').trim().toLowerCase();
+                var name = m[2].replace(/^"|"$/g, '').trim();
+                
+                if (!date) continue;
+
+                if (shift === 'on-call' || shift === 'on call') res.onCall.push({ date, name });
+                else if (shift.startsWith('library')) res.libraryDuty.push({ date, name });
+                else if (shift.startsWith('sports')) res.sportsHallDuty.push({ date, name });
+                else if (shift.startsWith('day')) res.schedule.push({ date, shift: 'day', name });
+                else if (shift.startsWith('evening')) res.schedule.push({ date, shift: 'evening', name });
+                else if (shift.startsWith('overnight')) res.schedule.push({ date, shift: 'overnight', name });
             }
-            return date;
+            return res;
         }
 
+        function getWeatherIcon(code, is_day) {
+            const map = { 0: is_day?'☀️':'🌑', 1: is_day?'🌤️':'☁️', 2: is_day?'🌥️':'☁️', 3: '☁️', 45: '🌫️', 48: '🌫️', 95: '⛈️' };
+            if (map[code]) return map[code];
+            if (code >= 51 && code <= 67 || code >= 80 && code <= 82) return '🌧️';
+            if (code >= 71 && code <= 77 || code >= 85 && code <= 86) return '🌨️';
+            return '🌡️';
+        }
+
+        // --- LOGIC ---
         function updateDuty(date) {
-            var shift = getCurrentShift(date);
-            currentShift = shift;
+            var h = date.getHours(), m = date.getMinutes(), day = date.getDay();
+            var totalMins = h * 60 + m;
             
-            var dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday ... 6 = Saturday
-            var hours = date.getHours();
-            var minutes = date.getMinutes();
-            var timeInMinutes = hours * 60 + minutes;
-
+            // Shift Logic
+            var shift = (h >= 8 && h < 17) ? 'day' : (h >= 17 && h < 23) ? 'evening' : 'overnight';
             var searchDate = new Date(date);
-            if (shift === 'overnight' && hours < 8) {
-                searchDate.setDate(searchDate.getDate() - 1);
-            }
+            if (shift === 'overnight' && h < 8) searchDate.setDate(searchDate.getDate() - 1);
             
-            var entry = dutySchedule.find(function(e) {
-                return isSameDate(e.date, searchDate) && e.shift === shift;
-            });
-            dutyPerson = entry ? entry.name : 'No duty assigned';
+            var entry = dutySchedule.find(e => isSameDate(e.date, searchDate) && e.shift === shift);
+            window.currentDuty = {
+                person: entry ? entry.name : 'No duty assigned',
+                shift: shift,
+                label: shiftTimes[shift].label
+            };
 
-            nextShift = getNextShift(shift);
-            var nextShiftDate = getNextShiftDate(date, shift);
-            var nextEntry = dutySchedule.find(function(e) {
-                return isSameDate(e.date, nextShiftDate) && e.shift === nextShift;
-            });
-            nextDutyPerson = nextEntry ? nextEntry.name : 'No duty assigned';
-            nextShiftTime = shiftTimes[nextShift].label;
+            // Next Shift Logic
+            var nextS = shift === 'day' ? 'evening' : shift === 'evening' ? 'overnight' : 'day';
+            var nextD = new Date(date);
+            if (shift === 'overnight' && h >= 23) nextD.setDate(nextD.getDate() + 1);
             
-            var onCallEntry = onCallSchedule.find(function(e) {
-                return isSameDate(e.date, date);
-            });
-            onCallPerson = onCallEntry ? onCallEntry.name : 'Not assigned';
-            
-            // ==========================================
-            // LIBRARY LOGIC
-            // ==========================================
-            if (dayOfWeek === 5) {
-                // Friday: Closed
-                libraryDutyPerson = 'Closed';
-            } else if (dayOfWeek === 6) {
-                // Saturday: Closed after 11:30am (690 minutes)
-                if (timeInMinutes > 690) { 
-                    libraryDutyPerson = 'Closed';
-                } else {
-                    var libraryEntry = libraryDutySchedule.find(function(e) { return isSameDate(e.date, date); });
-                    if (libraryEntry && libraryEntry.name && libraryEntry.name !== '#N/A' && libraryEntry.name.trim() !== '') {
-                        libraryDutyPerson = libraryEntry.name;
-                    } else {
-                        libraryDutyPerson = 'Open|10am to 11.30am';
-                    }
-                }
-            } else if (dayOfWeek === 0) {
-                // Sunday: Closed
-                libraryDutyPerson = 'Closed'; 
-            } else {
-                // Monday - Thursday
-                // Check if it is after 8:45pm (20:45 = 1245 minutes)
-                if (timeInMinutes > 1245) {
-                    libraryDutyPerson = 'Closed';
-                } else {
-                    var libraryEntry = libraryDutySchedule.find(function(e) { return isSameDate(e.date, date); });
-                    var libName = libraryEntry ? libraryEntry.name : 'Not assigned';
-                    // Add the time below the name
-                    libraryDutyPerson = libName + '|7pm to 8.45pm';
-                }
-            }
-            
-            // ==========================================
-            // SPORTS HALL LOGIC
-            // ==========================================
-            if (dayOfWeek === 6) {
-                // Saturday: Closed after 11:30am (690 minutes)
-                if (timeInMinutes > 690) { 
-                    sportsHallDutyPerson = 'Closed';
-                } else {
-                    var sportsHallEntry = sportsHallDutySchedule.find(function(e) { return isSameDate(e.date, date); });
-                    if (sportsHallEntry && sportsHallEntry.name && sportsHallEntry.name !== '#N/A' && sportsHallEntry.name.trim() !== '') {
-                        sportsHallDutyPerson = sportsHallEntry.name;
-                    } else {
-                        sportsHallDutyPerson = 'Open|10am to 11.30am';
-                    }
-                }
-            } else if (dayOfWeek === 0) {
-                // Sunday: Closed after 4pm (960 minutes)
-                if (timeInMinutes > 960) { 
-                    sportsHallDutyPerson = 'Closed';
-                } else {
-                    var sportsHallEntry = sportsHallDutySchedule.find(function(e) { return isSameDate(e.date, date); });
-                    if (sportsHallEntry && sportsHallEntry.name && sportsHallEntry.name !== '#N/A' && sportsHallEntry.name.trim() !== '') {
-                        sportsHallDutyPerson = sportsHallEntry.name;
-                    } else {
-                        sportsHallDutyPerson = 'Open|2pm - 4pm';
-                    }
-                }
-            } else {
-                // Monday - Friday
-                // Check if it is after 6:30pm (18:30 = 1110 minutes)
-                if (timeInMinutes > 1110) {
-                    sportsHallDutyPerson = 'Closed';
-                } else {
-                    var sportsHallEntry = sportsHallDutySchedule.find(function(e) { return isSameDate(e.date, date); });
-                    var sportName = sportsHallEntry ? sportsHallEntry.name : 'Not assigned';
-                    // Add the time below the name
-                    sportsHallDutyPerson = sportName + '|5pm to 6.30pm';
-                }
-            }
-        }
+            var nextEntry = dutySchedule.find(e => isSameDate(e.date, nextD) && e.shift === nextS);
+            window.nextDuty = {
+                person: nextEntry ? nextEntry.name : 'No duty assigned',
+                time: shiftTimes[nextS].label
+            };
 
-        function formatDate(date) {
-            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            return days[date.getDay()] + ', ' + months[date.getMonth()] + ' ' + date.getDate();
+            // On Call
+            var oc = onCallSchedule.find(e => isSameDate(e.date, date));
+            window.onCallName = oc ? oc.name : 'Not assigned';
+
+            // Library Logic
+            var libEntry = libraryDutySchedule.find(e => isSameDate(e.date, date));
+            var libName = (libEntry && libEntry.name && libEntry.name !== '#N/A') ? libEntry.name : null;
+            
+            if (day === 5 || day === 0) window.libraryStr = 'Closed'; // Fri/Sun
+            else if (day === 6) window.libraryStr = totalMins > 690 ? 'Closed' : (libName || 'Open|10am to 11.30am');
+            else window.libraryStr = totalMins > 1245 ? 'Closed' : (libName ? libName + '|7pm to 8.45pm' : 'Not assigned');
+
+            // Sports Hall Logic
+            var sportEntry = sportsHallDutySchedule.find(e => isSameDate(e.date, date));
+            var sportName = (sportEntry && sportEntry.name && sportEntry.name !== '#N/A') ? sportEntry.name : null;
+
+            if (day === 6) window.sportsStr = totalMins > 690 ? 'Closed' : (sportName || 'Open|10am to 11.30am');
+            else if (day === 0) window.sportsStr = totalMins > 960 ? 'Closed' : (sportName || 'Open|2pm - 4pm');
+            else window.sportsStr = totalMins > 1110 ? 'Closed' : (sportName ? sportName + '|5pm to 6.30pm' : 'Not assigned');
         }
 
         function render() {
-            var shiftInfo = shiftTimes[currentShift];
+            var timeStr = currentTime.toLocaleTimeString([], {hour:'numeric', minute:'2-digit', hour12:true}).toLowerCase();
+            var dateStr = currentTime.toLocaleDateString('en-GB', {weekday:'long', month:'long', day:'numeric'});
             
-            var timeString = currentTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
-            timeString = timeString.replace(' AM', 'am').replace(' PM', 'pm');
-            
-            var mainContent;
-            
-            if (isLoading) {
-                mainContent = '<div class="duty-card"><div class="text-duty-label">Loading schedule...</div></div>';
-            } else if (errorMessage) {
-                mainContent = '<div class="duty-card"><div class="text-duty-label" style="color: #dc2626; margin-bottom: 1vh;">⚠️ ' + errorMessage + '</div><div class="text-next-shift">Check the Google Sheets URL configuration</div></div>';
-            } else {
-                
-                var weatherDisplay = shiftInfo.icon;
-                var weatherTemp = '';
-                if (weatherData && weatherData.temp !== undefined) {
-                    var weatherIcon = getWeatherIcon(weatherData.code, weatherData.is_day);
-                    weatherDisplay = weatherIcon;
-                    weatherTemp = ' ' + weatherData.temp + '°C';
-                }
-                
-                var libraryDisplay;
-                if (libraryDutyPerson.includes('|')) {
-                    var parts = libraryDutyPerson.split('|');
-                    libraryDisplay = '<div class="text-oncall-name">' + parts[0] + '</div>' +
-                                     '<div class="text-oncall-subtext">' + parts[1] + '</div>';
-                } else {
-                    libraryDisplay = '<div class="text-oncall-name">' + libraryDutyPerson + '</div>';
-                }
-
-                var sportsHallDisplay;
-                if (sportsHallDutyPerson.includes('|')) {
-                    var parts = sportsHallDutyPerson.split('|');
-                    sportsHallDisplay = '<div class="text-oncall-name">' + parts[0] + '</div>' +
-                                        '<div class="text-oncall-subtext">' + parts[1] + '</div>';
-                } else {
-                    sportsHallDisplay = '<div class="text-oncall-name">' + sportsHallDutyPerson + '</div>';
-                }
-                
-                mainContent = '\
-                    <div style="text-align: center; margin-bottom: 0.5vh;">\
-                        <div class="shift-badge gap-sm" style="flex-direction: column; padding: 1.2vh 2.5vw;">\
-                            <span style="font-size: 2.2vmin;">' + weatherDisplay + weatherTemp + '</span>\
-                            <span class="text-shift-label">' + shiftInfo.label + '</span>\
-                        </div>\
-                        <div class="text-time" style="margin-top: 0.5vh;">' + timeString + '</div>\
-                    </div>\
-                    <div class="duty-card">\
-                        <div class="flex-center gap-md" style="margin-bottom: 1vh;">\
-                            <span class="icon-lg">👤</span>\
-                            <span class="text-duty-label">Currently On Duty</span>\
-                        </div>\
-                        <div class="text-duty-name">' + dutyPerson + '</div>\
-                    </div>\
-                    <div class="next-duty-card">\
-                        <div class="text-next-label">Coming Up Next</div>\
-                        <div class="text-next-shift" style="margin: 0.3vh 0 0.5vh 0;">' + nextShiftTime + '</div>\
-                        <div class="text-next-name">' + nextDutyPerson + '</div>\
-                    </div>\
-                    <div class="oncall-card">\
-                        <div class="duty-grid">\
-                            <div>\
-                                <div class="flex-center gap-sm" style="margin-bottom: 0.2vh;">\
-                                    <span class="icon-sm">📞</span>\
-                                    <span class="text-oncall-label">On-Call</span>\
-                                </div>\
-                                <div class="text-oncall-name">' + onCallPerson + '</div>\
-                            </div>\
-                            <div>\
-                                <div class="flex-center gap-sm" style="margin-bottom: 0.2vh;">\
-                                    <span class="icon-sm">📚</span>\
-                                    <span class="text-oncall-label">Library</span>\
-                                </div>\
-                                ' + libraryDisplay + '\
-                            </div>\
-                            <div>\
-                                <div class="flex-center gap-sm" style="margin-bottom: 0.2vh;">\
-                                    <span class="icon-sm">🏀</span>\
-                                    <span class="text-oncall-label">Sports Hall</span>\
-                                </div>\
-                                ' + sportsHallDisplay + '\
-                            </div>\
-                        </div>\
-                    </div>\
-                ';
+            if (isLoading || errorMessage) {
+                document.getElementById('app').innerHTML = `<div class="main-container"><div class="card"><div class="duty-card"><div class="text-duty-label">${isLoading ? 'Loading...' : '⚠️ '+errorMessage}</div></div></div></div>`;
+                return;
             }
-            
-            document.getElementById('app').innerHTML = '\
-                <div class="main-container">\
-                    <div class="card">\
-                        <img src="https://raw.githubusercontent.com/markjohnson-design/rota/refs/heads/main/Crescent%20Wolves.svg" alt="Logo" class="logo-svg" />\
-                        \
-                        <div class="header-section">\
-                            <h1 class="text-title"><span class="crescent-icon">🌙</span> Crescent House</h1>\
-                            <div class="flex-center gap-sm" style="margin-top: 0.5vh;">\
-                                <span class="icon-sm">📅</span>\
-                                <span class="text-date">' + formatDate(currentTime) + '</span>\
-                            </div>\
-                        </div>\
-                        <div class="content-section">\
-                            ' + mainContent + '\
-                        </div>\
-                        <div class="footer-section">\
-                            <div class="grid-3">\
-                                <div class="shift-time-box">\
-                                    <div class="flex-center gap-sm" style="margin-bottom: 0.5vh;">\
-                                        <span class="icon-sm">☀️</span>\
-                                        <span class="text-schedule-label">Day</span>\
-                                    </div>\
-                                    <div class="text-schedule-time">8am - 5pm</div>\
-                                </div>\
-                                <div class="shift-time-box">\
-                                    <div class="flex-center gap-sm" style="margin-bottom: 0.5vh;">\
-                                        <span class="icon-sm">🌅</span>\
-                                        <span class="text-schedule-label">Evening</span>\
-                                    </div>\
-                                    <div class="text-schedule-time">5pm - 11pm</div>\
-                                </div>\
-                                <div class="shift-time-box">\
-                                    <div class="flex-center gap-sm" style="margin-bottom: 0.5vh;">\
-                                        <span class="icon-sm">🌙</span>\
-                                        <span class="text-schedule-label">Overnight</span>\
-                                    </div>\
-                                    <div class="text-schedule-time">11pm - 8am</div>\
-                                </div>\
-                            </div>\
-                            <div style="text-align: center; margin-top: 1.5vh;">\
-                                <p class="text-footer">Display updates every minute • Schedule reloads every 5 minutes</p>\
-                            </div>\
-                        </div>\
-                    </div>\
-                </div>\
-            ';
+
+            var wIcon = shiftTimes[window.currentDuty.shift].icon;
+            var wTemp = '';
+            if (weatherData) {
+                wIcon = getWeatherIcon(weatherData.code, weatherData.is_day);
+                wTemp = ` ${weatherData.temp}°C`;
+            }
+
+            var formatName = (str) => {
+                if (!str.includes('|')) return `<div class="text-oncall-name">${str}</div>`;
+                var p = str.split('|');
+                return `<div class="text-oncall-name">${p[0]}</div><div class="text-oncall-subtext">${p[1]}</div>`;
+            };
+
+            var html = `
+                <div class="main-container">
+                    <div class="card">
+                        <img src="https://raw.githubusercontent.com/markjohnson-design/rota/refs/heads/main/Crescent%20Wolves.svg" alt="Logo" class="logo-svg" />
+                        <div class="header-section">
+                            <h1 class="text-title"><span class="crescent-icon">🌙</span> Crescent House</h1>
+                            <div class="flex-center gap-sm" style="margin-top:0.5vh">
+                                <span class="icon-sm">📅</span><span class="text-date">${dateStr}</span>
+                            </div>
+                        </div>
+                        <div class="content-section">
+                            <div style="text-align:center; margin-bottom:0.5vh">
+                                <div class="shift-badge gap-sm" style="flex-direction:column; padding:1.2vh 2.5vw">
+                                    <span style="font-size:2.2vmin">${wIcon}${wTemp}</span>
+                                    <span class="text-shift-label">${window.currentDuty.label}</span>
+                                </div>
+                                <div class="text-time" style="margin-top:0.5vh">${timeStr}</div>
+                            </div>
+                            <div class="duty-card">
+                                <div class="flex-center gap-md" style="margin-bottom:1vh">
+                                    <span class="icon-lg">👤</span><span class="text-duty-label">Currently On Duty</span>
+                                </div>
+                                <div class="text-duty-name">${window.currentDuty.person}</div>
+                            </div>
+                            <div class="next-duty-card">
+                                <div class="text-next-label">Coming Up Next</div>
+                                <div class="text-next-shift" style="margin:0.3vh 0 0.5vh 0">${window.nextDuty.time}</div>
+                                <div class="text-next-name">${window.nextDuty.person}</div>
+                            </div>
+                            <div class="oncall-card">
+                                <div class="duty-grid">
+                                    <div>
+                                        <div class="flex-center gap-sm" style="margin-bottom:0.2vh"><span class="icon-sm">📞</span><span class="text-oncall-label">On-Call</span></div>
+                                        <div class="text-oncall-name">${window.onCallName}</div>
+                                    </div>
+                                    <div>
+                                        <div class="flex-center gap-sm" style="margin-bottom:0.2vh"><span class="icon-sm">📚</span><span class="text-oncall-label">Library</span></div>
+                                        ${formatName(window.libraryStr)}
+                                    </div>
+                                    <div>
+                                        <div class="flex-center gap-sm" style="margin-bottom:0.2vh"><span class="icon-sm">🏀</span><span class="text-oncall-label">Sports Hall</span></div>
+                                        ${formatName(window.sportsStr)}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer-section">
+                            <div class="grid-3">
+                                <div class="shift-time-box"><div class="flex-center gap-sm" style="margin-bottom:0.5vh"><span class="icon-sm">☀️</span><span class="text-schedule-label">Day</span></div><div class="text-schedule-time">8am - 5pm</div></div>
+                                <div class="shift-time-box"><div class="flex-center gap-sm" style="margin-bottom:0.5vh"><span class="icon-sm">🌅</span><span class="text-schedule-label">Evening</span></div><div class="text-schedule-time">5pm - 11pm</div></div>
+                                <div class="shift-time-box"><div class="flex-center gap-sm" style="margin-bottom:0.5vh"><span class="icon-sm">🌙</span><span class="text-schedule-label">Overnight</span></div><div class="text-schedule-time">11pm - 8am</div></div>
+                            </div>
+                            <div style="text-align:center; margin-top:1.5vh"><p class="text-footer">Display updates every minute • Schedule reloads every 5 minutes</p></div>
+                        </div>
+                    </div>
+                </div>`;
+            document.getElementById('app').innerHTML = html;
         }
 
-        function update() {
-            currentTime = new Date(); 
-            
-            if (!isLoading && !errorMessage) {
-                updateDuty(currentTime);
-            }
-            render();
-        }
-
-        render();
+        // INIT
+        function update() { currentTime = new Date(); if (!isLoading && !errorMessage) updateDuty(currentTime); render(); }
+        update();
         loadScheduleFromGoogleSheets();
-        loadWeather(); 
-        
-        setInterval(update, 60000); 
-        
+        loadWeather();
+        setInterval(update, 60000);
         setInterval(loadScheduleFromGoogleSheets, 300000);
-        setInterval(loadWeather, 60000); 
+        setInterval(loadWeather, 60000);
     </script>
 </body>
 </html>
