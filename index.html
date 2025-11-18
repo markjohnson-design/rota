@@ -17,14 +17,12 @@
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #fde68a;
-            /* === REFINEMENT: Removed -webkit- prefix === */
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
         }
         
         #app {
             width: 100vw;
             height: 100vh;
-            /* === REFINEMENT: Removed -webkit- prefixes === */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -37,7 +35,6 @@
             height: 100%;
             max-width: 1200px;
             max-height: 100%;
-            /* === REFINEMENT: Removed -webkit- prefixes === */
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
@@ -45,12 +42,10 @@
         
         .card {
             background: rgba(255, 255, 255, 0.95);
-            /* === REFINEMENT: Removed -webkit- prefix === */
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             border-radius: 1.5rem;
             padding: 2vh;
             height: 100%;
-            /* === REFINEMENT: Removed -webkit- prefixes === */
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
@@ -58,14 +53,12 @@
         }
         
         .header-section {
-            /* === REFINEMENT: Removed -webkit- prefixes === */
             flex: 0 1 auto;
             text-align: center;
             margin-bottom: 1vh;
         }
         
         .content-section {
-            /* === REFINEMENT: Removed -webkit- prefixes === */
             flex: 1 1 auto;
             display: flex;
             flex-direction: column;
@@ -75,7 +68,6 @@
         }
         
         .footer-section {
-            /* === REFINEMENT: Removed -webkit- prefixes === */
             flex: 0 1 auto;
             margin-top: auto; 
         }
@@ -90,9 +82,7 @@
         
         .shift-badge {
             background: #f59e0b;
-            /* === REFINEMENT: Removed -webkit- prefix === */
             background: linear-gradient(135deg, #f59e0b, #d97706);
-            /* === REFINEMENT: Removed -webkit- prefixes === */
             display: inline-flex;
             align-items: center;
             color: white;
@@ -103,7 +93,6 @@
         
         .duty-card {
             background: #fffbeb;
-            /* === REFINEMENT: Removed -webkit- prefix === */
             background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
             border: 3px solid #f59e0b;
             border-radius: 1.5rem;
@@ -114,7 +103,6 @@
         
         .next-duty-card {
             background: #ffffff;
-            /* === REFINEMENT: Removed -webkit- prefix === */
             background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%);
             border: 2px solid #fbbf24;
             border-radius: 1rem;
@@ -124,7 +112,6 @@
         
         .oncall-card {
             background: #ffffff;
-            /* === REFINEMENT: Removed -webkit- prefix === */
             background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
             border: 2px solid #fb923c;
             border-radius: 0.75rem;
@@ -139,10 +126,8 @@
             gap: 1vw;
         }
         
-        /* === REFINEMENT: Changed vh to vmin === */
         .text-oncall-label { font-size: 2vmin; color: #c2410c; font-weight: 600; }
         
-        /* === REFINEMENT: Changed vh to vmin AND added wrap/overflow control === */
         .text-oncall-name { 
             font-size: 3.5vmin; 
             color: #9a3412; 
@@ -152,7 +137,6 @@
             text-overflow: ellipsis;
         }
         
-        /* === REFINEMENT: Changed vh to vmin === */
         .text-oncall-subtext {
             font-size: 1.8vmin;
             color: #9a3412;
@@ -169,17 +153,14 @@
         
         .crescent-icon {
             display: inline-block;
-            /* === REFINEMENT: Removed -webkit- prefix === */
             animation: float 3s ease-in-out infinite;
         }
         
-        /* === REFINEMENT: Removed -webkit- keyframes === */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-5px); }
         }
         
-        /* === REFINEMENT: Changed all font vh to vmin === */
         .text-title { font-size: 5vmin; font-weight: bold; color: #78350f; }
         .text-date { font-size: 2.5vmin; color: #b45309; font-weight: 500; }
         .text-shift-label { font-size: 2.5vmin; font-weight: 600; }
@@ -201,7 +182,6 @@
         .icon-lg { font-size: 4vmin; }
         
         .flex-center {
-            /* === REFINEMENT: Removed -webkit- prefixes === */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -221,9 +201,6 @@
     <div id="app"></div>
 
     <script>
-        // === JAVASCRIPT LOGIC REMAINS UNCHANGED ===
-        // === No changes were needed to the <script> block ===
-
         var GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTaV5LO0lckYcYAl-2NV3kut2k7TKxezMG5n7Kql2iTTtcg7Q9Lj_MfEgHlk8Y0pybHHkSLLojxmS7S/pub?output=csv';
         
         var shiftTimes = {
@@ -271,49 +248,34 @@
                     weatherData = {
                         temp: Math.round(data.current_weather.temperature),
                         code: data.current_weather.weathercode,
-                        is_day: data.current_weather.is_day // 1 = day, 0 = night
+                        is_day: data.current_weather.is_day 
                     };
-                    render(); // Re-render with new weather data
+                    render(); 
                 }
             })
             .catch(function(error) {
                 console.error('Error loading weather:', error);
-                weatherData = null; // Reset on error
+                weatherData = null; 
             });
         }
 
         function getWeatherIcon(code, is_day) {
             switch (code) {
-                case 0: // Clear sky
-                    return is_day ? '☀️' : '🌑';
-                case 1: // Mainly clear
-                    return is_day ? '🌤️' : '☁️';
-                case 2: // Partly cloudy
-                    return is_day ? '🌥️' : '☁️';
-                case 3: // Overcast
-                    return '☁️';
-                case 45: case 48: // Fog
-                    return '🌫️';
-                case 51: case 53: case 55: // Drizzle
-                    return '🌦️';
-                case 61: case 63: case 65: // Rain
-                    return '🌧️';
-                case 66: case 67: // Freezing Rain
-                    return '🌧️';
-                case 71: case 73: case 75: // Snow fall
-                    return '🌨️';
-                case 77: // Snow grains
-                    return '🌨️';
-                case 80: case 81: case 82: // Rain showers
-                    return '🌧️';
-                case 85: case 86: // Snow showers
-                    return '🌨️';
-                case 95: // Thunderstorm
-                    return '⛈️';
-                case 96: case 99: // Thunderstorm with hail
-                    return '⛈️';
-                default:
-                    return '🌡️'; // Default/unknown
+                case 0: return is_day ? '☀️' : '🌑';
+                case 1: return is_day ? '🌤️' : '☁️';
+                case 2: return is_day ? '🌥️' : '☁️';
+                case 3: return '☁️';
+                case 45: case 48: return '🌫️';
+                case 51: case 53: case 55: return '🌦️';
+                case 61: case 63: case 65: return '🌧️';
+                case 66: case 67: return '🌧️';
+                case 71: case 73: case 75: return '🌨️';
+                case 77: return '🌨️';
+                case 80: case 81: case 82: return '🌧️';
+                case 85: case 86: return '🌨️';
+                case 95: return '⛈️';
+                case 96: case 99: return '⛈️';
+                default: return '🌡️'; 
             }
         }
 
@@ -351,13 +313,9 @@
                 if (!matches || matches.length < 3) continue;
                 
                 var dateString = matches[0].replace(/^"|"$/g, '').trim();
-                // Get the raw shift name, just cleaned and lowercased
                 var shift = matches[1].replace(/^"|"$/g, '').trim().toLowerCase();
                 var name = matches[2].replace(/^"|"$/g, '').trim();
                 var date = parseDate(dateString);
-                
-                // === START OF FIX ===
-                // This logic is now flexible and normalizes the shift names
                 
                 if (date && (shift === 'on-call' || shift === 'on call')) {
                     onCall.push({ date: date, name: name });
@@ -366,16 +324,12 @@
                 } else if (date && (shift === 'sports-hall' || shift === 'sports hall')) {
                     sportsHallDuty.push({ date: date, name: name });
                 } else if (date && shift.startsWith('day')) {
-                    // Pushes 'day' regardless of 'day' or 'day shift'
                     schedule.push({ date: date, shift: 'day', name: name });
                 } else if (date && shift.startsWith('evening')) {
-                    // Pushes 'evening'
                     schedule.push({ date: date, shift: 'evening', name: name });
                 } else if (date && shift.startsWith('overnight')) {
-                    // Pushes 'overnight'
                     schedule.push({ date: date, shift: 'overnight', name: name });
                 }
-                // === END OF FIX ===
             }
             return { schedule: schedule, onCall: onCall, libraryDuty: libraryDuty, sportsHallDuty: sportsHallDuty };
         }
@@ -432,47 +386,31 @@
             return 'day';
         }
 
-        // ===================================
-        // === FIX #2 - REPLACED FUNCTION ===
-        // ===================================
         function getNextShiftDate(date, currentShift) {
             var hours = date.getHours();
-
-            // The next shift ('day') is only on "tomorrow" if the
-            // current overnight shift is between 11pm and midnight.
             if (currentShift === 'overnight' && hours >= 23) {
                 var tomorrow = new Date(date);
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 return tomorrow;
             }
-            
-            // For 'day', 'evening', and 00:00-08:00 'overnight',
-            // the next shift starts on the *same* calendar day.
             return date;
         }
 
-        // ===================================
-        // === FIX #1 - MODIFIED FUNCTION ===
-        // ===================================
         function updateDuty(date) {
             var shift = getCurrentShift(date);
             currentShift = shift;
             
-            var dayOfWeek = date.getDay(); // 0 = Sunday, 5 = Friday, 6 = Saturday
+            var dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday ... 6 = Saturday
             var hours = date.getHours();
             var minutes = date.getMinutes();
             var timeInMinutes = hours * 60 + minutes;
 
-            // === FIX: Determine the correct date to search for ===
             var searchDate = new Date(date);
             if (shift === 'overnight' && hours < 8) {
-                // If it's after midnight (before 8am), the shift *started* yesterday.
                 searchDate.setDate(searchDate.getDate() - 1);
             }
-            // ====================================================
             
             var entry = dutySchedule.find(function(e) {
-                // Use the new 'searchDate' variable instead of 'date'
                 return isSameDate(e.date, searchDate) && e.shift === shift;
             });
             dutyPerson = entry ? entry.name : 'No duty assigned';
@@ -490,18 +428,18 @@
             });
             onCallPerson = onCallEntry ? onCallEntry.name : 'Not assigned';
             
-            // Library: Closed Friday, Saturday (except 10am-11:30am), Sunday
+            // ==========================================
+            // LIBRARY LOGIC
+            // ==========================================
             if (dayOfWeek === 5) {
+                // Friday: Closed
                 libraryDutyPerson = 'Closed';
             } else if (dayOfWeek === 6) {
-                // Saturday: Show "Open" message *until* 11:30am (690 minutes)
-                if (timeInMinutes > 690) { // After 11:30am
+                // Saturday: Closed after 11:30am (690 minutes)
+                if (timeInMinutes > 690) { 
                     libraryDutyPerson = 'Closed';
                 } else {
-                    // Before and during opening time
-                    var libraryEntry = libraryDutySchedule.find(function(e) {
-                        return isSameDate(e.date, date);
-                    });
+                    var libraryEntry = libraryDutySchedule.find(function(e) { return isSameDate(e.date, date); });
                     if (libraryEntry && libraryEntry.name && libraryEntry.name !== '#N/A' && libraryEntry.name.trim() !== '') {
                         libraryDutyPerson = libraryEntry.name;
                     } else {
@@ -509,24 +447,30 @@
                     }
                 }
             } else if (dayOfWeek === 0) {
-                libraryDutyPerson = 'Closed'; // Closed all day Sunday
+                // Sunday: Closed
+                libraryDutyPerson = 'Closed'; 
             } else {
-                var libraryEntry = libraryDutySchedule.find(function(e) {
-                    return isSameDate(e.date, date);
-                });
-                libraryDutyPerson = libraryEntry ? libraryEntry.name : 'Not assigned';
+                // Monday - Thursday
+                // Check if it is after 8:45pm (20:45 = 1245 minutes)
+                if (timeInMinutes > 1245) {
+                    libraryDutyPerson = 'Closed';
+                } else {
+                    var libraryEntry = libraryDutySchedule.find(function(e) { return isSameDate(e.date, date); });
+                    var libName = libraryEntry ? libraryEntry.name : 'Not assigned';
+                    // Add the time below the name
+                    libraryDutyPerson = libName + '|7pm to 8.45pm';
+                }
             }
             
-            // Sports Hall: Closed Sunday (except 2pm-4pm), Saturday (except 10am-11:30am)
+            // ==========================================
+            // SPORTS HALL LOGIC
+            // ==========================================
             if (dayOfWeek === 6) {
-                // Saturday: Show "Open" message *until* 11:30am (690 minutes)
-                if (timeInMinutes > 690) { // After 11:30am
+                // Saturday: Closed after 11:30am (690 minutes)
+                if (timeInMinutes > 690) { 
                     sportsHallDutyPerson = 'Closed';
                 } else {
-                    // Before and during opening time
-                    var sportsHallEntry = sportsHallDutySchedule.find(function(e) {
-                        return isSameDate(e.date, date);
-                    });
+                    var sportsHallEntry = sportsHallDutySchedule.find(function(e) { return isSameDate(e.date, date); });
                     if (sportsHallEntry && sportsHallEntry.name && sportsHallEntry.name !== '#N/A' && sportsHallEntry.name.trim() !== '') {
                         sportsHallDutyPerson = sportsHallEntry.name;
                     } else {
@@ -534,14 +478,11 @@
                     }
                 }
             } else if (dayOfWeek === 0) {
-                // Sunday: Show "Open" message *until* 4pm (960 minutes)
-                if (timeInMinutes > 960) { // After 4:00pm
+                // Sunday: Closed after 4pm (960 minutes)
+                if (timeInMinutes > 960) { 
                     sportsHallDutyPerson = 'Closed';
                 } else {
-                    // Before and during opening time
-                    var sportsHallEntry = sportsHallDutySchedule.find(function(e) {
-                        return isSameDate(e.date, date);
-                    });
+                    var sportsHallEntry = sportsHallDutySchedule.find(function(e) { return isSameDate(e.date, date); });
                     if (sportsHallEntry && sportsHallEntry.name && sportsHallEntry.name !== '#N/A' && sportsHallEntry.name.trim() !== '') {
                         sportsHallDutyPerson = sportsHallEntry.name;
                     } else {
@@ -549,10 +490,16 @@
                     }
                 }
             } else {
-                var sportsHallEntry = sportsHallDutySchedule.find(function(e) {
-                    return isSameDate(e.date, date);
-                });
-                sportsHallDutyPerson = sportsHallEntry ? sportsHallEntry.name : 'Not assigned';
+                // Monday - Friday
+                // Check if it is after 6:30pm (18:30 = 1110 minutes)
+                if (timeInMinutes > 1110) {
+                    sportsHallDutyPerson = 'Closed';
+                } else {
+                    var sportsHallEntry = sportsHallDutySchedule.find(function(e) { return isSameDate(e.date, date); });
+                    var sportName = sportsHallEntry ? sportsHallEntry.name : 'Not assigned';
+                    // Add the time below the name
+                    sportsHallDutyPerson = sportName + '|5pm to 6.30pm';
+                }
             }
         }
 
@@ -565,7 +512,6 @@
         function render() {
             var shiftInfo = shiftTimes[currentShift];
             
-            // === TIME FORMAT UPDATED ===
             var timeString = currentTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
             timeString = timeString.replace(' AM', 'am').replace(' PM', 'pm');
             
@@ -577,7 +523,6 @@
                 mainContent = '<div class="duty-card"><div class="text-duty-label" style="color: #dc2626; margin-bottom: 1vh;">⚠️ ' + errorMessage + '</div><div class="text-next-shift">Check the Google Sheets URL configuration</div></div>';
             } else {
                 
-                // === WEATHER DISPLAY LOGIC ===
                 var weatherDisplay = shiftInfo.icon;
                 var weatherTemp = '';
                 if (weatherData && weatherData.temp !== undefined) {
@@ -586,7 +531,6 @@
                     weatherTemp = ' ' + weatherData.temp + '°C';
                 }
                 
-                // === LOGIC FOR TWO-LINE DISPLAY ===
                 var libraryDisplay;
                 if (libraryDutyPerson.includes('|')) {
                     var parts = libraryDutyPerson.split('|');
@@ -604,7 +548,6 @@
                 } else {
                     sportsHallDisplay = '<div class="text-oncall-name">' + sportsHallDutyPerson + '</div>';
                 }
-                // ===================================
                 
                 mainContent = '\
                     <div style="text-align: center; margin-bottom: 0.5vh;">\
